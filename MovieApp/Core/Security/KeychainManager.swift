@@ -7,18 +7,17 @@
 import Foundation
 import Security
 
+enum KeychainManager {
 
-final class KeychainManager {
+    private static let service = "com.movieapp.auth"
 
-    static let shared = KeychainManager()
-    private init() {}
-
-    func save(key: String, value: String) {
-        let data = value.data(using: .utf8)!
+    static func save(token: String, account: String) {
+        let data = Data(token.utf8)
 
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
             kSecValueData as String: data
         ]
 
@@ -26,31 +25,29 @@ final class KeychainManager {
         SecItemAdd(query as CFDictionary, nil)
     }
 
-    func read(key: String) -> String? {
+    static func get(account: String) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
             kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
 
         var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        SecItemCopyMatching(query as CFDictionary, &result)
 
-        guard status == errSecSuccess,
-              let data = result as? Data,
-              let value = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-
-        return value
+        guard let data = result as? Data else { return nil }
+        return String(decoding: data, as: UTF8.self)
     }
 
-    func delete(key: String) {
+    static func delete(account: String) {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
         ]
+
         SecItemDelete(query as CFDictionary)
     }
 }
