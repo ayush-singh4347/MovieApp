@@ -11,7 +11,8 @@ import SwiftUI
 struct MovieAppApp: App {
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+        SplashView()
+                .preferredColorScheme(ColorScheme.dark)
         }
     }
 }
