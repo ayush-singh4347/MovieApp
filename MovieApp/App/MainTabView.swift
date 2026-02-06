@@ -1,25 +1,33 @@
-
 import SwiftUI
 
 struct MainTabView: View {
 
     var body: some View {
+
         TabView {
 
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
+            NavigationStack {
+                HomeView()
+            }
+            .tabItem {
+                Label("Home", systemImage: "house.fill")
+            }
 
-            SearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
 
-            WatchlistView()
-                .tabItem {
-                    Label("Watchlist", systemImage: "bookmark.fill")
-                }
+            NavigationStack {
+                SearchView()
+            }
+            .tabItem {
+                Label("Search", systemImage: "magnifyingglass")
+            }
+
+
+            NavigationStack {
+                WatchlistView()
+            }
+            .tabItem {
+                Label("Watchlist", systemImage: "bookmark.fill")
+            }
         }
     }
 }

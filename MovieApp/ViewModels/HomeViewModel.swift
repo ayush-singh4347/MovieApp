@@ -14,9 +14,21 @@ final class HomeViewModel: ObservableObject {
 
     func loadDummyData() {
         movies = [
-            Movie(id: 1, title: "Inception"),
-            Movie(id: 2, title: "Interstellar"),
-            Movie(id: 3, title: "Oppenheimer")
+            Movie(
+                id: 1,
+                title: "Batman",
+                posterPath: nil,
+                rating: 0.0,
+                releaseDate: nil
+            ),
+            Movie(
+                id: 2,
+                title: "Spiderman",
+                posterPath: nil,
+                rating: 0.0,
+                releaseDate: nil
+            )
         ]
+
     }
 }
