@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		24D7686B2F35C7F0008CCD09 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 24D7686A2F35C7F0008CCD09 /* FirebaseAuth */; };
+		24D768772F361A4F008CCD09 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 24D768762F361A4F008CCD09 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24D7686B2F35C7F0008CCD09 /* FirebaseAuth in Frameworks */,
+				24D768772F361A4F008CCD09 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +40,7 @@
 			isa = PBXGroup;
 			children = (
 				24C03EEB2F3321C600B4304F /* MovieApp */,
+				24D768752F361A4F008CCD09 /* Frameworks */,
 				24C03EEA2F3321C600B4304F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +51,13 @@
 				24C03EE92F3321C600B4304F /* MovieApp.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		24D768752F361A4F008CCD09 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,6 +81,7 @@
 			name = MovieApp;
 			packageProductDependencies = (
 				24D7686A2F35C7F0008CCD09 /* FirebaseAuth */,
+				24D768762F361A4F008CCD09 /* FirebaseFirestore */,
 			);
 			productName = MovieApp;
 			productReference = 24C03EE92F3321C600B4304F /* MovieApp.app */;
@@ -371,6 +382,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 24D768692F35C7F0008CCD09 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		24D768762F361A4F008CCD09 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 24D768692F35C7F0008CCD09 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
