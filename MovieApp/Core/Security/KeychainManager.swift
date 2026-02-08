@@ -47,7 +47,6 @@ enum KeychainManager {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account
         ]
-
         SecItemDelete(query as CFDictionary)
     }
 }
