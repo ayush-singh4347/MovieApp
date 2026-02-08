@@ -15,9 +15,22 @@
 		24C03EE92F3321C600B4304F /* MovieApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		24C0408A2F38AAB100B4304F /* Exceptions for "MovieApp" folder in "MovieApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				App/Untitled.swift,
+			);
+			target = 24C03EE82F3321C600B4304F /* MovieApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		24C03EEB2F3321C600B4304F /* MovieApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				24C0408A2F38AAB100B4304F /* Exceptions for "MovieApp" folder in "MovieApp" target */,
+			);
 			path = MovieApp;
 			sourceTree = "<group>";
 		};
