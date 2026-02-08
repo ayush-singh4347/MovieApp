@@ -8,21 +8,24 @@
 import SwiftUI
 
 struct AppEntryView: View {
-
+    @StateObject private var authVM = AuthViewModel()
     @State private var showSplash = true
 
     var body: some View {
-        if showSplash {
-            SplashView()
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        withAnimation {
-                            showSplash = false
+        NavigationStack{
+            if showSplash {
+                SplashView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showSplash = false
+                            }
                         }
                     }
-                }
-        } else {
-            RootView()
+            } else {
+                RootView()
+            }
         }
+        .environmentObject(authVM)
     }
 }

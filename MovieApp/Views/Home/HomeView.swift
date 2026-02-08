@@ -8,7 +8,7 @@ struct HomeView: View {
     @EnvironmentObject var authVM: AuthViewModel
 
     var body: some View {
-        NavigationStack {
+        
             List {
                 Section {
                     Button(role: .destructive) {
@@ -30,5 +30,5 @@ struct HomeView: View {
                 viewModel.loadDummyData()
             }
         }
-    }
+    
 }
