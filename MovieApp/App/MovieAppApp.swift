@@ -16,6 +16,8 @@ struct MovieAppApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+        SplashView()
+                .preferredColorScheme(ColorScheme.dark)
         }
     }
 }
