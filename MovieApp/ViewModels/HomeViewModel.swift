@@ -4,19 +4,31 @@
 //
 //  Created by rentamac on 2/4/26.
 //
-
 import Foundation
 import Combine
 
+@MainActor
 final class HomeViewModel: ObservableObject {
 
     @Published var movies: [Movie] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
 
-    func loadDummyData() {
-        movies = [
-            Movie(id: 1, title: "Inception"),
-            Movie(id: 2, title: "Interstellar"),
-            Movie(id: 3, title: "Oppenheimer")
-        ]
+    private let repository = MovieRepository()
+
+    func loadTrendingMovies() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            let result = try await repository.fetchTrendingMovies()
+            movies = result
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isLoading = false
     }
 }
+
+
