@@ -41,25 +41,28 @@ struct WatchlistView: View {
 
                 List {
 
-                    ForEach(viewModel.movies) { movie in
+                    ForEach(viewModel.movies, id: \.id) { movie in
 
                         HStack(spacing: 15) {
 
                             // Poster
-                            AsyncImage(
-                                url: movie.posterPathURL
-                            ) { image in
+                            AsyncImage(url: movie.posterURL) { phase in
 
-                                image
-                                    .resizable()
-                                    .scaledToFill()
+                                if let image = phase.image {
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
 
-                            } placeholder: {
+                                } else if phase.error != nil {
+                                    Color.red
 
-                                Color.gray.opacity(0.3)
+                                } else {
+                                    Color.gray.opacity(0.3)
+                                }
                             }
                             .frame(width: 70, height: 100)
                             .cornerRadius(8)
+
 
 
                             // Info
