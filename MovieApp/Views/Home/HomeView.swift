@@ -1,5 +1,6 @@
 import SwiftUI
 
+
 struct HomeView: View {
 
     @StateObject private var viewModel = HomeViewModel()
@@ -18,7 +19,7 @@ struct HomeView: View {
                     .fontWeight(.bold)
                     .padding(.horizontal)
 
-                // ✅ 4 category buttons visible together
+             
                 LazyVGrid(columns: columns, spacing: 12) {
                     categoryButton(.nowPlaying)
                     categoryButton(.popular)
@@ -29,7 +30,7 @@ struct HomeView: View {
 
                 Divider()
 
-                // ✅ Movies Grid
+                
                 ScrollView {
                     LazyVGrid(
                         columns: [
@@ -48,7 +49,6 @@ struct HomeView: View {
             .navigationTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
 
-            // ✅ PROFILE BUTTON (TOP RIGHT)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
@@ -59,8 +59,8 @@ struct HomeView: View {
                     }
                 }
             }
-
-            .onAppear {
+            }
+                Section {
                 Task {
                     await viewModel.fetchMovies()
                 }
@@ -92,5 +92,5 @@ struct HomeView: View {
                 )
                 .cornerRadius(10)
         }
-    }
+    
 }

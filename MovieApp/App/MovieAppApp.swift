@@ -8,14 +8,17 @@
 import SwiftUI
 import Firebase
 
+
 @main
 struct MovieAppApp: App {
-    init(){
+
+    init() {
         FirebaseApp.configure()
     }
+
     var body: some Scene {
         WindowGroup {
-            RootView()
+            AppEntryView()
         }
     }
 }

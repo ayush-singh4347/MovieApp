@@ -15,9 +15,7 @@ struct LoginView: View {
     @EnvironmentObject var authVM: AuthViewModel
 
     var body: some View {
-        NavigationStack{
             ZStack {
-                
                 
                 Color("backgroundColor")
                     .ignoresSafeArea()
@@ -72,6 +70,5 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 24)
             }
-        }
     }
 }
