@@ -51,16 +51,32 @@ final class AuthViewModel: ObservableObject {
                 .createUser(withEmail: email, password: password)
 
             self.user = result.user
-            
 
-            
             let db = Firestore.firestore()
+
             try await db.collection("users")
                 .document(result.user.uid)
                 .setData([
+                    
+                    "uid": result.user.uid,
                     "email": email,
-                    "watchlist": []
+
+                    
+                    "displayName": email.components(separatedBy: "@").first ?? "",
+                    "photoURL": "",
+                    "bio": "",
+                    "joinedAt": Timestamp(date: Date()),
+
+                    
+                    "watchlist": [],
+
+                   
+                    "preferences": [
+                        "theme": "system",
+                        "notifications": true
+                    ]
                 ])
+
             await storeToken(for: result.user)
 
         } catch {

@@ -77,5 +77,32 @@ final class WatchlistViewModel: ObservableObject {
             }
         }
     }
+    // MARK: - Add to Watchlist
+
+    func addToWatchlist(movie: Movie) async {
+
+        guard let uid = Auth.auth().currentUser?.uid else {
+            errorMessage = "User not logged in"
+            return
+        }
+
+        let db = Firestore.firestore()
+
+        do {
+            try await db
+                .collection("users")
+                .document(uid)
+                .updateData([
+                    "watchlist": FieldValue.arrayUnion([movie.id])
+                ])
+
+            print("Added to watchlist:", movie.id)
+
+        } catch {
+            errorMessage = error.localizedDescription
+            print("Add to watchlist failed:", error.localizedDescription)
+        }
+    }
+
 
 }

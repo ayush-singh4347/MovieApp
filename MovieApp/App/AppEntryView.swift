@@ -1,8 +1,17 @@
+//
+//  AppEntryView.swift
+//  MovieApp
+//
+//  Created by rentamac on 2/8/26.
+//
+
+
 import SwiftUI
 
 struct AppEntryView: View {
 
     @StateObject private var authVM = AuthViewModel()
+    @State private var path = NavigationPath()
     @State private var showSplash = true
 
     var body: some View {
@@ -31,5 +40,14 @@ struct AppEntryView: View {
             }
         }
         .environmentObject(authVM)
+        .onChange(of: authVM.user) { _, newUser in
+            if newUser == nil {
+                path = NavigationPath()
+            }
+        }
+
+        
     }
 }
+
+
