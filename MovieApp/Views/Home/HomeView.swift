@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct HomeView: View {
 
     @StateObject private var viewModel = HomeViewModel()
@@ -11,70 +10,63 @@ struct HomeView: View {
     )
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
+        VStack(spacing: 16) {
 
-                Text("What do you want to watch?")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-
-             
-                LazyVGrid(columns: columns, spacing: 12) {
-                    categoryButton(.nowPlaying)
-                    categoryButton(.popular)
-                    categoryButton(.topRated)
-                    categoryButton(.upcoming)
-                }
+            Text("What do you want to watch?")
+                .font(.title2)
+                .fontWeight(.bold)
                 .padding(.horizontal)
 
-                Divider()
-
-                
-                ScrollView {
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible()),
-                            GridItem(.flexible())
-                        ],
-                        spacing: 16
-                    ) {
-                        ForEach(viewModel.movies) { movie in
-                            MovieGridCell(movie: movie)
-                        }
-                    }
-                    .padding()
-                }
+            LazyVGrid(columns: columns, spacing: 12) {
+                categoryButton(.nowPlaying)
+                categoryButton(.popular)
+                categoryButton(.topRated)
+                categoryButton(.upcoming)
             }
-            .navigationTitle("Home")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal)
 
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
-                        ProfileView()
-                    } label: {
-                        Image(systemName: "person.crop.circle")
-                            .font(.title2)
+            Divider()
+
+            ScrollView {
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible()),
+                        GridItem(.flexible())
+                    ],
+                    spacing: 16
+                ) {
+                    ForEach(viewModel.movies) { movie in
+                        MovieGridCell(movie: movie)
                     }
                 }
+                .padding()
             }
-            }
-                Section {
-                Task {
-                    await viewModel.fetchMovies()
+        }
+        .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
+
+        // ✅ PROFILE BUTTON FINALLY WORKS
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink {
+                    ProfileView()
+                } label: {
+                    Image(systemName: "person.crop.circle")
+                        .font(.title2)
                 }
+            }
+        }
+        .onAppear {
+            Task {
+                await viewModel.fetchMovies()
             }
         }
     }
 
-    // MARK: - Category Button
     private func categoryButton(_ category: MovieCategory) -> some View {
         Button {
             viewModel.selectedCategory = category
-            Task {
-                await viewModel.fetchMovies()
-            }
+            Task { await viewModel.fetchMovies() }
         } label: {
             Text(category.rawValue)
                 .font(.caption)
@@ -82,15 +74,16 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, minHeight: 36)
                 .background(
                     viewModel.selectedCategory == category
-                    ? Color.blue
-                    : Color.gray.opacity(0.2)
+                        ? Color.blue
+                        : Color.gray.opacity(0.2)
                 )
                 .foregroundColor(
                     viewModel.selectedCategory == category
-                    ? .white
-                    : .gray
+                        ? .white
+                        : .gray
                 )
                 .cornerRadius(10)
         }
-    
+    }
 }
+
