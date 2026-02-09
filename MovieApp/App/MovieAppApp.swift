@@ -1,16 +1,10 @@
-//
-//  MovieAppApp.swift
-//  MovieApp
-//
-//  Created by rentamac on 2/3/26.
-//
-
 import SwiftUI
 import Firebase
 
-
 @main
 struct MovieAppApp: App {
+
+    @StateObject private var authVM = AuthViewModel()
 
     init() {
         FirebaseApp.configure()
@@ -19,6 +13,7 @@ struct MovieAppApp: App {
     var body: some Scene {
         WindowGroup {
             AppEntryView()
+                .environmentObject(authVM)
         }
     }
 }

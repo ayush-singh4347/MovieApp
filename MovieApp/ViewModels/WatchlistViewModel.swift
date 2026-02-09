@@ -1,48 +1,81 @@
 import SwiftUI
 import Combine
+import FirebaseAuth
+import FirebaseFirestore
 
 @MainActor
-class WatchlistViewModel: ObservableObject {
+final class WatchlistViewModel: ObservableObject {
 
     @Published var movies: [Movie] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    // 🔹 Temporary (Mock Firebase IDs)
-    private let mockWatchlistIds = [550, 299536, 603]
+    private let repository = WatchlistRepository()
 
     // MARK: - Fetch Watchlist
 
-    func fetchWatchlistFromServer() async {
+    func fetchWatchlist() async {
 
         isLoading = true
         errorMessage = nil
 
-        var fetchedMovies: [Movie] = []
+        do {
 
-        for id in mockWatchlistIds {
+            // Get IDs from Firebase
+            let ids = try await repository.fetchWatchlistIds()
 
-            let url = Endpoints.movieById(id)
+            print("Fetched IDs:", ids)
 
-            do {
+            var fetchedMovies: [Movie] = []
+
+            // Fetch movie details from TMDB
+            for id in ids {
+
+                let url = Endpoints.movieById(id)
+
                 let movie: Movie =
                     try await APIClient.shared.request(urlString: url)
 
                 fetchedMovies.append(movie)
-
-            } catch {
-                print("Failed to fetch movie:", error)
-                self.errorMessage = error.localizedDescription
             }
+
+            self.movies = fetchedMovies
+
+        } catch {
+
+            errorMessage = error.localizedDescription
         }
 
-        self.movies = fetchedMovies
-        self.isLoading = false
+        isLoading = false
     }
 
-    // MARK: - Delete (Local Only for Now)
+    // MARK: - Delete (Local Only)
 
     func delete(at offsets: IndexSet) {
+
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+
+        let db = Firestore.firestore()
+
+        // Get movie IDs to delete
+        let idsToRemove = offsets.map { movies[$0].id }
+
+        // Update local UI
         movies.remove(atOffsets: offsets)
+
+        // Update Firebase
+        Task {
+            do {
+                try await db
+                    .collection("users")
+                    .document(uid)
+                    .updateData([
+                        "watchlist": FieldValue.arrayRemove(idsToRemove)
+                    ])
+            } catch {
+                print("Delete failed:", error.localizedDescription)
+            }
+        }
     }
+
 }

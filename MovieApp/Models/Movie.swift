@@ -9,14 +9,16 @@ struct Movie: Identifiable, Decodable {
     let releaseDate: String?
 
     enum CodingKeys: String, CodingKey {
+
         case id
         case title
         case posterPath = "poster_path"
         case rating = "vote_average"
         case releaseDate = "release_date"
     }
-    
 }
+
+
 extension Movie {
 
     var posterPathURL: URL? {
@@ -28,4 +30,3 @@ extension Movie {
         )
     }
 }
-

@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct WatchlistView: View {
@@ -63,17 +62,17 @@ struct WatchlistView: View {
                             .cornerRadius(8)
 
 
-                            // Movie Info
+                            // Info
                             VStack(alignment: .leading, spacing: 6) {
 
                                 Text(movie.title)
                                     .font(.headline)
 
                                 Text("⭐️ \(String(format: "%.1f", movie.rating))")
-                                    .font(.subheadline)
                                     .foregroundColor(.gray)
 
                                 if let date = movie.releaseDate {
+
                                     Text(date)
                                         .font(.caption)
                                         .foregroundColor(.gray)
@@ -88,9 +87,9 @@ struct WatchlistView: View {
         }
         .navigationTitle("Watchlist")
 
-        // Fetch when screen opens
+        // Load on open
         .task {
-            await viewModel.fetchWatchlistFromServer()
+            await viewModel.fetchWatchlist()
         }
     }
 }
