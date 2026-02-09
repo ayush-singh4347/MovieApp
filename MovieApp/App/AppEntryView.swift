@@ -1,19 +1,16 @@
-//
-//  AppEntryView.swift
-//  MovieApp
-//
-//  Created by rentamac on 2/8/26.
-//
-
 import SwiftUI
 
 struct AppEntryView: View {
+
     @StateObject private var authVM = AuthViewModel()
     @State private var showSplash = true
 
     var body: some View {
-        NavigationStack{
+
+        Group {
+
             if showSplash {
+
                 SplashView()
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -22,8 +19,15 @@ struct AppEntryView: View {
                             }
                         }
                     }
+
             } else {
-                RootView()
+
+                // Auth-based routing
+                if authVM.user == nil {
+                    LoginView()
+                } else {
+                    MainTabView()
+                }
             }
         }
         .environmentObject(authVM)

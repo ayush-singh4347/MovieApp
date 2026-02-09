@@ -80,10 +80,9 @@ struct SearchMovieCardView: View {
                         .foregroundColor(.gray)
                 }
 
-                if let rating = movie.voteAverage {
-                    Text("⭐️ \(String(format: "%.1f", rating))")
-                        .font(.caption)
-                }
+                Text("⭐️ \(String(format: "%.1f", movie.rating))")
+                    .font(.caption)
+
             }
 
             Spacer()

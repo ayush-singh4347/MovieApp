@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		248B39592F39EB8900F82B8F /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 248B39582F39EB8900F82B8F /* FirebaseDatabase */; };
 		24D7686B2F35C7F0008CCD09 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 24D7686A2F35C7F0008CCD09 /* FirebaseAuth */; };
 		24D768772F361A4F008CCD09 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 24D768762F361A4F008CCD09 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				248B39592F39EB8900F82B8F /* FirebaseDatabase in Frameworks */,
 				24D7686B2F35C7F0008CCD09 /* FirebaseAuth in Frameworks */,
 				24D768772F361A4F008CCD09 /* FirebaseFirestore in Frameworks */,
 			);
@@ -82,6 +84,7 @@
 			packageProductDependencies = (
 				24D7686A2F35C7F0008CCD09 /* FirebaseAuth */,
 				24D768762F361A4F008CCD09 /* FirebaseFirestore */,
+				248B39582F39EB8900F82B8F /* FirebaseDatabase */,
 			);
 			productName = MovieApp;
 			productReference = 24C03EE92F3321C600B4304F /* MovieApp.app */;
@@ -112,7 +115,7 @@
 			mainGroup = 24C03EE02F3321C600B4304F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				24D768692F35C7F0008CCD09 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				248B39572F39EB8900F82B8F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 24C03EEA2F3321C600B4304F /* Products */;
@@ -367,6 +370,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		248B39572F39EB8900F82B8F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.9.0;
+			};
+		};
 		24D768692F35C7F0008CCD09 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -378,6 +389,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		248B39582F39EB8900F82B8F /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 248B39572F39EB8900F82B8F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
 		24D7686A2F35C7F0008CCD09 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 24D768692F35C7F0008CCD09 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
