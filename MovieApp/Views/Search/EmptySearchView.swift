@@ -36,8 +36,12 @@ import SwiftUI
 struct EmptySearchView: View {
     var body: some View {
         VStack(spacing: 12) {
+            Spacer()
             Image("MovieNotFound")
-                .font(.largeTitle)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+
 
             Text("We Are Sorry, We Cannot Find the Movie :(")
                 .font(.headline)
@@ -47,6 +51,7 @@ struct EmptySearchView: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
+            Spacer()
         }
         .padding(.top, 40)
     }

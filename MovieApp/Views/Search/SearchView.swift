@@ -22,11 +22,11 @@ struct SearchView: View {
                     .background(Color(.systemGray6))
                     .cornerRadius(12)
                     .padding(.horizontal)
-                    .onChange(of: viewModel.searchText) { _, newValue in
-                        Task {
-                            await viewModel.searchMovies()
-                        }
-                    }
+//                    .onChange(of: viewModel.searchText) { _, newValue in
+//                        Task {
+//                            await viewModel.searchMovies()
+//                        }
+//                    }
 
                 
                 if viewModel.isLoading {

@@ -18,19 +18,35 @@ final class SearchViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let apiKey: String
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         // Read API key from Keychain
         //self.apiKey = KeychainManager.shared.read(key: "TMDB_API_KEY") ?? ""
         self.apiKey = KeychainManager.get(account: "TMDB_API_KEY") ?? ""
+        setupSearchDebounce()
 
     }
+    private func setupSearchDebounce() {
+        $searchText
+            .debounce(for: .milliseconds(1000), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] text in
+                guard let self = self else { return }
+                Task {
+                    await self.searchMovies()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
 
     func searchMovies() async {
 //        guard !searchText.isEmpty else {
 //            movies = []
 //            return
 //        }
+        print("API CALLED WITH:",searchText)
         guard searchText.count >= 2 else {
                 movies = []
                 return
