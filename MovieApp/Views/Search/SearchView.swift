@@ -16,7 +16,7 @@ struct SearchView: View {
         NavigationStack {
             VStack(spacing: 16) {
 
-                // 🔍 Search bar
+          
                 TextField("Search movie", text: $viewModel.searchText)
                     .padding()
                     .background(Color(.systemGray6))
@@ -28,13 +28,13 @@ struct SearchView: View {
                         }
                     }
 
-                // ⏳ Loading
+                
                 if viewModel.isLoading {
                     ProgressView()
                         .padding()
                 }
 
-                // 😕 Empty state
+              
                 if !viewModel.isLoading &&
                     viewModel.movies.isEmpty &&
                     !viewModel.searchText.isEmpty {
@@ -42,7 +42,7 @@ struct SearchView: View {
                     EmptySearchView()
                 }
 
-                // 🎬 Results
+               
                 List(viewModel.movies) { movie in
                     SearchMovieCardView(movie: movie)
                 }

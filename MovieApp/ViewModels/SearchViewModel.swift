@@ -21,7 +21,9 @@ final class SearchViewModel: ObservableObject {
 
     init() {
         // Read API key from Keychain
-        self.apiKey = KeychainManager.shared.read(key: "TMDB_API_KEY") ?? ""
+        //self.apiKey = KeychainManager.shared.read(key: "TMDB_API_KEY") ?? ""
+        self.apiKey = KeychainManager.get(account: "TMDB_API_KEY") ?? ""
+
     }
 
     func searchMovies() async {
