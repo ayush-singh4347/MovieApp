@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-
+    @StateObject private var watchlistVM = WatchlistViewModel()
     @StateObject private var viewModel = HomeViewModel()
 
     private let columns = Array(
@@ -37,6 +37,7 @@ struct HomeView: View {
                 ) {
                     ForEach(viewModel.movies) { movie in
                         MovieGridCell(movie: movie)
+                            .environmentObject(watchlistVM)
                     }
                 }
                 .padding()
@@ -45,7 +46,7 @@ struct HomeView: View {
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
 
-        // ✅ PROFILE BUTTON FINALLY WORKS
+       
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink {

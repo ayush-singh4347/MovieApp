@@ -29,7 +29,7 @@ struct SplashView: View {
                 Text("MovieApp")
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundColor(.white)
+                   
                     .opacity(opacity)
             }
         }

@@ -45,11 +45,15 @@ struct ProfileView: View {
 
                         Text(displayName)
                             .font(.title2)
+                            .foregroundColor(.white)
                             .bold()
 
                         Text(bio)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white.opacity(0.9))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal,16)
                     }
                 }
                 .padding(.top)
