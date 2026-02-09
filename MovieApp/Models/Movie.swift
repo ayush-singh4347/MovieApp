@@ -1,3 +1,9 @@
+//
+//  Dummy1.swift
+//  MovieApp
+//
+//  Created by rentamac on 2/4/26.
+//
 import Foundation
 
 struct Movie: Identifiable, Decodable {
@@ -7,6 +13,25 @@ struct Movie: Identifiable, Decodable {
     let posterPath: String?
     let rating: Double
     let releaseDate: String?
+    let voteAverage: Double?
+    var posterURL: URL? {
+          guard let posterPath else { return nil }
+          return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
+      }
+    
+    init(
+           id: Int,
+           title: String,
+           posterPath: String? = nil,
+           releaseDate: String? = nil,
+           voteAverage: Double? = nil
+       ) {
+           self.id = id
+           self.title = title
+           self.posterPath = posterPath
+           self.releaseDate = releaseDate
+           self.voteAverage = voteAverage
+       }
 
     enum CodingKeys: String, CodingKey {
 

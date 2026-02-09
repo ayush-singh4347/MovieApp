@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct MainTabView: View {
@@ -7,28 +6,30 @@ struct MainTabView: View {
 
         TabView {
 
-            NavigationStack {
+            NavigationView {
                 HomeView()
             }
+            .navigationViewStyle(.stack)
             .tabItem {
                 Label("Home", systemImage: "house.fill")
             }
 
-
-            NavigationStack {
+            NavigationView {
                 SearchView()
             }
+            .navigationViewStyle(.stack)
             .tabItem {
                 Label("Search", systemImage: "magnifyingglass")
             }
 
-
-            NavigationStack {
+            NavigationView {
                 WatchlistView()
             }
+            .navigationViewStyle(.stack)
             .tabItem {
                 Label("Watchlist", systemImage: "bookmark.fill")
             }
         }
     }
 }
+
