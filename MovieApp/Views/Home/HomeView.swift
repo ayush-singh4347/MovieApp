@@ -4,52 +4,93 @@ struct HomeView: View {
 
     @StateObject private var viewModel = HomeViewModel()
 
-    private let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
+    private let columns = Array(
+        repeating: GridItem(.flexible(), spacing: 12),
+        count: 4
+    )
 
     var body: some View {
         NavigationStack {
+            VStack(spacing: 16) {
 
-            if viewModel.isLoading {
-                ProgressView("Loading movies...")
-            }
+                Text("What do you want to watch?")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
 
-            else if let error = viewModel.errorMessage {
-                VStack(spacing: 12) {
-                    Text(error)
-                        .foregroundColor(.red)
-
-                    Button("Retry") {
-                        Task {
-                            await viewModel.loadTrendingMovies()
-                        }
-                    }
+                // ✅ 4 category buttons visible together
+                LazyVGrid(columns: columns, spacing: 12) {
+                    categoryButton(.nowPlaying)
+                    categoryButton(.popular)
+                    categoryButton(.topRated)
+                    categoryButton(.upcoming)
                 }
-            }
+                .padding(.horizontal)
 
-            else {
+                Divider()
+
+                // ✅ Movies Grid
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.flexible()),
+                            GridItem(.flexible())
+                        ],
+                        spacing: 16
+                    ) {
                         ForEach(viewModel.movies) { movie in
-                            NavigationLink {
-                                MovieDetailView(movie: movie)
-                            } label: {
-                                MovieGridCell(movie: movie)
-                            }
+                            MovieGridCell(movie: movie)
                         }
                     }
                     .padding()
                 }
-                .refreshable {
-                    await viewModel.loadTrendingMovies()
+            }
+            .navigationTitle("Home")
+            .navigationBarTitleDisplayMode(.inline)
+
+            // ✅ PROFILE BUTTON (TOP RIGHT)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        ProfileView()
+                    } label: {
+                        Image(systemName: "person.crop.circle")
+                            .font(.title2)
+                    }
+                }
+            }
+
+            .onAppear {
+                Task {
+                    await viewModel.fetchMovies()
                 }
             }
         }
-        .navigationTitle("Trending Movies")
-        .task {
-            await viewModel.loadTrendingMovies()
+    }
+
+    // MARK: - Category Button
+    private func categoryButton(_ category: MovieCategory) -> some View {
+        Button {
+            viewModel.selectedCategory = category
+            Task {
+                await viewModel.fetchMovies()
+            }
+        } label: {
+            Text(category.rawValue)
+                .font(.caption)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity, minHeight: 36)
+                .background(
+                    viewModel.selectedCategory == category
+                    ? Color.blue
+                    : Color.gray.opacity(0.2)
+                )
+                .foregroundColor(
+                    viewModel.selectedCategory == category
+                    ? .white
+                    : .gray
+                )
+                .cornerRadius(10)
         }
     }
 }
