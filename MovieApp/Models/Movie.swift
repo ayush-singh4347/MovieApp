@@ -15,6 +15,10 @@ struct Movie: Identifiable, Decodable {
     let posterPath: String?
     let releaseDate: String?
     let voteAverage: Double?
+    var posterURL: URL? {
+          guard let posterPath else { return nil }
+          return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
+      }
     
     init(
            id: Int,
