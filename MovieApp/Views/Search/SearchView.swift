@@ -44,7 +44,10 @@ struct SearchView: View {
 
                
                 List(viewModel.movies) { movie in
-                    SearchMovieCardView(movie: movie)
+                    NavigationLink(destination: MovieDetailView(movie: movie)) {
+                        SearchMovieCardView(movie: movie)
+                    }
+                    
                 }
                 .listStyle(.plain)
 
