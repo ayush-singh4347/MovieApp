@@ -4,7 +4,6 @@
 //
 //  Created by rentamac on 2/4/26.
 //
-
 import Foundation
 //struct Movie: Identifiable {
 //    let id: Int
@@ -44,3 +43,4 @@ struct Movie: Identifiable, Decodable {
 struct SearchResponse: Decodable {
     let results: [Movie]
 }
+
