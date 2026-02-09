@@ -51,7 +51,7 @@ final class AuthViewModel: ObservableObject {
                 .createUser(withEmail: email, password: password)
 
             self.user = result.user
-            await storeToken(for: result.user)
+            
 
             
             let db = Firestore.firestore()
@@ -61,6 +61,7 @@ final class AuthViewModel: ObservableObject {
                     "email": email,
                     "watchlist": []
                 ])
+            await storeToken(for: result.user)
 
         } catch {
             self.errorMessage = error.localizedDescription

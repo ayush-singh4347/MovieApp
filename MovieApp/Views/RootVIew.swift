@@ -5,21 +5,22 @@
 //  Created by rentamac on 2/5/26.
 //
 import SwiftUI
+import Combine
 
 struct RootView: View {
 
-    @StateObject private var authVM = AuthViewModel()
+    @EnvironmentObject var authVM: AuthViewModel
 
     var body: some View {
-        Group {
+        Group{
             if authVM.user != nil {
                 MainTabView()
-                    .environmentObject(authVM)
             } else {
                 LoginView()
-                    .environmentObject(authVM)
             }
         }
+            
     }
 }
+
 

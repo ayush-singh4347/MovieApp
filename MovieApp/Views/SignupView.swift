@@ -64,6 +64,9 @@ struct SignupView: View {
                             email: email,
                             password: password
                         )
+                        if authVM.user != nil{
+                            dismiss()
+                        }
                     }
                 } label: {
                     Text("Sign Up")
@@ -71,7 +74,7 @@ struct SignupView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
-                // 🔙 Back to Login
+                
                 HStack{
                     Text("Already have an account?")
                     
