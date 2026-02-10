@@ -6,10 +6,9 @@ struct MainTabView: View {
 
         TabView {
 
-            NavigationView {
+            NavigationStack {
                 HomeView()
             }
-            .navigationViewStyle(.stack)
             .tabItem {
                 Label("Home", systemImage: "house.fill")
             }
