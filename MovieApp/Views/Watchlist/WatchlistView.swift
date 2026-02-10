@@ -42,49 +42,48 @@ struct WatchlistView: View {
                 List {
 
                     ForEach(viewModel.movies, id: \.id) { movie in
+                        NavigationLink {
+                            MovieDetailView(movie: movie)
+                        } label: {
+                            HStack(spacing: 15) {
 
-                        HStack(spacing: 15) {
-
-                            // Poster
-                            AsyncImage(url: movie.posterURL) { phase in
-
-                                if let image = phase.image {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-
-                                } else if phase.error != nil {
-                                    Color.red
-
-                                } else {
-                                    Color.gray.opacity(0.3)
+                                // Poster
+                                AsyncImage(url: movie.posterURL) { phase in
+                                    if let image = phase.image {
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                    } else if phase.error != nil {
+                                        Color.red
+                                    } else {
+                                        Color.gray.opacity(0.3)
+                                    }
                                 }
-                            }
-                            .frame(width: 70, height: 100)
-                            .cornerRadius(8)
+                                .frame(width: 70, height: 100)
+                                .cornerRadius(8)
 
+                                // Info
+                                VStack(alignment: .leading, spacing: 6) {
 
+                                    Text(movie.title)
+                                        .font(.headline)
 
-                            // Info
-                            VStack(alignment: .leading, spacing: 6) {
-
-                                Text(movie.title)
-                                    .font(.headline)
-
-                                Text("⭐️ \(String(format: "%.1f", movie.rating))")
-                                    .foregroundColor(.gray)
-
-                                if let date = movie.releaseDate {
-
-                                    Text(date)
-                                        .font(.caption)
+                                    Text("⭐️ \(String(format: "%.1f", movie.rating))")
                                         .foregroundColor(.gray)
+
+                                    if let date = movie.releaseDate {
+                                        Text(date)
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             }
+                            .padding(.vertical, 5)
                         }
-                        .padding(.vertical, 5)
                     }
                     .onDelete(perform: viewModel.delete)
+                    .buttonStyle(.plain)
+
                 }
             }
         }

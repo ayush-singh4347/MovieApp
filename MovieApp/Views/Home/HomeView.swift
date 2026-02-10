@@ -96,9 +96,15 @@ struct HomeView: View {
                     spacing: 16
                 ) {
                     ForEach(viewModel.movies) { movie in
-                        MovieGridCell(movie: movie)
-                            .environmentObject(watchlistVM)
+                        NavigationLink {
+                            MovieDetailView(movie: movie)
+                        } label: {
+                            MovieGridCell(movie: movie)
+                                .environmentObject(watchlistVM)
+                        }
+                        .buttonStyle(.plain) 
                     }
+
                 }
                 .padding()
             }
