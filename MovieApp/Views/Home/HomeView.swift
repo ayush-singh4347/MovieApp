@@ -10,24 +10,84 @@ struct HomeView: View {
     )
 
     var body: some View {
-        VStack(spacing: 16) {
-
-            Text("What do you want to watch?")
-                .font(.title2)
-                .fontWeight(.bold)
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                
+                Text("What do you want to watch?")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+                
+                NavigationLink {
+                    SearchView()
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.secondary)
+                        
+                        Text("Search movies, actors, genres...")
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.primary.opacity(0.08))
+                    )
+                }
+                .buttonStyle(.plain)
                 .padding(.horizontal)
-
-            LazyVGrid(columns: columns, spacing: 12) {
-                categoryButton(.nowPlaying)
-                categoryButton(.popular)
-                categoryButton(.topRated)
-                categoryButton(.upcoming)
-            }
-            .padding(.horizontal)
-
-            Divider()
-
-            ScrollView {
+                
+                
+                LazyVGrid(columns: columns, spacing: 14) {
+                    
+                    CategoryCard(
+                        title: "Now Playing",
+                        icon: "play.circle.fill",
+                        isSelected: viewModel.selectedCategory == .nowPlaying
+                    ) {
+                        Task{
+                            await viewModel.selectCategory(.nowPlaying)
+                        }
+                    }
+                    
+                    CategoryCard(
+                        title: "Popular",
+                        icon: "flame.fill",
+                        isSelected: viewModel.selectedCategory == .popular
+                    ) {
+                        Task{
+                            await viewModel.selectCategory(.popular)
+                        }
+                    }
+                    
+                    CategoryCard(
+                        title: "Top Rated",
+                        icon: "star.fill",
+                        isSelected: viewModel.selectedCategory == .topRated
+                    ) {
+                        Task{
+                            await viewModel.selectCategory(.topRated)
+                        }
+                    }
+                    
+                    CategoryCard(
+                        title: "Upcoming",
+                        icon: "clock.fill",
+                        isSelected: viewModel.selectedCategory == .upcoming
+                    ) {
+                        Task{
+                            await viewModel.selectCategory(.upcoming)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                
+                
+                Divider()
+                
+                
                 LazyVGrid(
                     columns: [
                         GridItem(.flexible()),
@@ -62,12 +122,13 @@ struct HomeView: View {
                         .font(.title2)
                 }
             }
-        }
-        .onAppear {
-            Task {
-                await viewModel.fetchMovies()
             }
-        }
+            .onAppear {
+                Task {
+                    await viewModel.fetchMovies()
+                }
+            }
+        
     }
 
     private func categoryButton(_ category: MovieCategory) -> some View {

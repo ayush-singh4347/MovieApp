@@ -14,6 +14,7 @@ final class HomeViewModel: ObservableObject {
     @Published var selectedCategory: MovieCategory = .nowPlaying
     @Published var isLoading = false
     @Published var errorMessage: String?
+   
     
 
     private let apiKey = "43af8191dc6d22f16e133e7f73e296d4"
@@ -44,4 +45,13 @@ final class HomeViewModel: ObservableObject {
 
         isLoading = false
     }
+    
+    func selectCategory(_ category: MovieCategory) async {
+            guard selectedCategory != category else { return }
+
+            selectedCategory = category
+            await fetchMovies()
+        }
+
+
 }
