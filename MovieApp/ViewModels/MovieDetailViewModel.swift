@@ -1,9 +1,3 @@
-//
-//  MovieDetailViewModel.swift
-//  MovieApp
-//
-//  Created by rentamac on 2/10/26.
-//
 
 import Foundation
 import Combine
@@ -14,6 +8,7 @@ final class MovieDetailViewModel: ObservableObject {
     @Published var cast: [CastMember] = []
     @Published var isInWatchlist = false
     @Published var isLoading = false
+    
 
     private let watchlistVM = WatchlistViewModel()
 
