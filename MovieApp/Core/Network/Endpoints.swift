@@ -34,6 +34,10 @@ struct Endpoints {
     static func movieById(_ id: Int) -> String {
         return "\(baseURL)/movie/\(id)?api_key=\(APIConstants.apiKey)"
     }
+    static func movieCredits(id: Int) -> String {
+        return "\(baseURL)/movie/\(id)/credits?api_key=\(APIConstants.apiKey)"
+    }
+
 
 }
 
