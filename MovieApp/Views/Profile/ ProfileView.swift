@@ -9,14 +9,14 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct ProfileView: View {
-
+    
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var vm = ProfileViewModel()
-
+    
     @State private var isEditing = false
     @State private var isLoading = true
     @Binding var selectedTab: Tab
-
+    
     var body: some View {
         ScrollView {
             if let profile = vm.profile{
@@ -55,68 +55,69 @@ struct ProfileView: View {
                     }
                 }
                 .padding(.top)
-
-               
+                
+                
                 HStack(spacing: 16) {
                     Button {
-                            //WatchlistView()
+                        //WatchlistView()
                         selectedTab = .watchlist
-                        } label: {
-                            statCard(
-                                title: "Watchlist",
-                                value: "\(profile.watchlist.count)",
-                                icon: "bookmark.fill"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        
+                    } label: {
                         statCard(
-                            title: "Movies",
-                            value: "∞",
-                            icon: "film.fill"
+                            title: "Watchlist",
+                            value: "\(profile.watchlist.count)",
+                            icon: "bookmark.fill"
                         )
                     }
+                    .buttonStyle(.plain)
                     
+                    statCard(
+                        title: "Movies",
+                        value: "∞",
+                        icon: "film.fill"
+                    )
+                }
+                
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Account")
+                        .font(.headline)
                     
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Account")
-                            .font(.headline)
-                        
-                        HStack {
-                            Image(systemName: "envelope.fill")
-                            Text(profile.email)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
+                    HStack {
+                        Image(systemName: "envelope.fill")
+                        Text(profile.email)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    
-                    
-                    VStack(spacing: 12) {
-                        
-                        Button {
-                            isEditing = true
-                        } label: {
-                            Label("Edit Profile", systemImage: "pencil")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        
-                        Button(role: .destructive) {
-                            authVM.logout()
-                        } label: {
-                            Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
-                    
-                    Spacer(minLength: 40)
                 }
                 .padding()
-            }else if vm.isLoading{
-                ProgressView().padding(.top,80)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                
+                
+                VStack(spacing: 12) {
+                    
+                    Button {
+                        isEditing = true
+                    } label: {
+                        Label("Edit Profile", systemImage: "pencil")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button(role: .destructive) {
+                        authVM.logout()
+                    } label: {
+                        Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                
+                Spacer(minLength: 40)
+                
+                    .padding()
+            } else if vm.isLoading{
+                ProgressView()
+                    .padding(.top,80)
             }else{
                 Text("Profilenot found")
                     .padding(.top, 80)
@@ -139,6 +140,7 @@ struct ProfileView: View {
             await vm.fetchProfile()
         }
     }
+}
 
     
 
@@ -160,4 +162,5 @@ struct ProfileView: View {
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
-}
+
+

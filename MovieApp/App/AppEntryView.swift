@@ -11,7 +11,7 @@ struct AppEntryView: View {
 
     @StateObject private var authVM = AuthViewModel()
     @State private var showSplash = true
-    @EnvironmentObject var authVM: AuthViewModel
+    //@EnvironmentObject var authVM: AuthViewModel
 
     var body: some View {
 
