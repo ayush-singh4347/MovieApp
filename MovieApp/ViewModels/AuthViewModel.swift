@@ -11,6 +11,13 @@ import Combine
 import SwiftUI
 import FirebaseFirestore
 
+enum AuthState {
+    case loading
+    case authenticated
+    case unauthenticated
+}
+
+
 
 @MainActor
 final class AuthViewModel: ObservableObject {
@@ -18,11 +25,25 @@ final class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var authState: AuthState = .loading
 
+    private var authListener: AuthStateDidChangeListenerHandle?
     init() {
-        self.user = Auth.auth().currentUser
+        listenToAuthState()
     }
+    private func listenToAuthState() {
+            authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
+                guard let self = self else { return }
 
+                self.user = user
+
+                if user != nil {
+                    self.authState = .authenticated
+                } else {
+                    self.authState = .unauthenticated
+                }
+            }
+        }
     
     func login(email: String, password: String) async {
         isLoading = true
@@ -51,26 +72,20 @@ final class AuthViewModel: ObservableObject {
                 .createUser(withEmail: email, password: password)
 
             self.user = result.user
+            self.authState = .authenticated
 
             let db = Firestore.firestore()
 
             try await db.collection("users")
                 .document(result.user.uid)
                 .setData([
-                    
                     "uid": result.user.uid,
                     "email": email,
-
-                    
                     "displayName": email.components(separatedBy: "@").first ?? "",
                     "photoURL": "",
                     "bio": "",
                     "joinedAt": Timestamp(date: Date()),
-
-                    
                     "watchlist": [],
-
-                   
                     "preferences": [
                         "theme": "system",
                         "notifications": true
@@ -92,7 +107,8 @@ final class AuthViewModel: ObservableObject {
         do {
             try Auth.auth().signOut()
             KeychainManager.delete(account: "firebase_id_token")
-            self.user = nil
+            user = nil
+            authState = .unauthenticated
         } catch {
             errorMessage = error.localizedDescription
         }

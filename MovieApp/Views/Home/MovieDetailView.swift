@@ -4,6 +4,7 @@ struct MovieDetailView: View {
 
     let movie: Movie
     @StateObject private var vm = MovieDetailViewModel()
+    @EnvironmentObject var watchlistVM : WatchlistViewModel
     
 
     private let headerHeight: CGFloat = 260
@@ -14,14 +15,13 @@ struct MovieDetailView: View {
 
             VStack(alignment: .leading, spacing: 24) {
 
-                // MARK: - BACKGROUND POSTER ONLY
                 ZStack(alignment: .topTrailing) {
 
                     AsyncImage(url: movie.posterURL) { image in
                         image
                             .resizable()
                             //.scaledToFit()
-                            .scaledToFill()//  FITS PROPERLY
+                            .scaledToFill()
                     } placeholder: {
                         Color.black
                     }
@@ -33,13 +33,16 @@ struct MovieDetailView: View {
                     ).safeAreaPadding(.top)
 
 
-                    // Bookmark Button
                     Button {
                         Task {
-                            await vm.toggleWatchlist(movie: movie)
+                            await watchlistVM.toggleWatchlist(movie: movie)
                         }
                     } label: {
-                        Image(systemName: vm.isInWatchlist ? "bookmark.fill" : "bookmark")
+                        Image(systemName:
+                            watchlistVM.watchlistIds.contains(movie.id)
+                            ? "bookmark.fill"
+                            : "bookmark"
+                        )
                             .font(.title2)
                             .foregroundColor(.white)
                             .padding(10)

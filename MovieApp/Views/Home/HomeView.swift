@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var watchlistVM = WatchlistViewModel()
+    @EnvironmentObject var watchlistVM: WatchlistViewModel
     @StateObject private var viewModel = HomeViewModel()
     @Binding var selectedTab: Tab
 
@@ -147,6 +147,7 @@ struct HomeView: View {
             .onAppear {
                 Task {
                     await viewModel.fetchMovies()
+                    await watchlistVM.fetchWatchlist()
                 }
             }
         

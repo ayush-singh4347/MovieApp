@@ -7,6 +7,7 @@ enum Tab {
 
 
 struct MainTabView: View {
+    @StateObject private var watchlistVM = WatchlistViewModel()
     @State private var selectedTab: Tab = .home
 
     var body: some View {
@@ -39,6 +40,7 @@ struct MainTabView: View {
             }
             .tag(Tab.watchlist)
         }
+        .environmentObject(watchlistVM)
     }
 }
 

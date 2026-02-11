@@ -15,9 +15,6 @@ struct MovieGridCell: View {
     @EnvironmentObject var watchlistVM: WatchlistViewModel
 
     @State private var isAdding = false
-    @State private var addedToWatchlist = false
-    //@State private var isPressed = false
-
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -80,12 +77,10 @@ struct MovieGridCell: View {
 
            
             Button {
-                guard !addedToWatchlist else { return }
                 isAdding = true
 
                 Task {
                     await watchlistVM.addToWatchlist(movie: movie)
-                    addedToWatchlist = true
                     isAdding = false
                 }
             } label: {
@@ -99,7 +94,9 @@ struct MovieGridCell: View {
                             .tint(.white)
                             .scaleEffect(0.6)
                     } else {
-                        Image(systemName: addedToWatchlist ? "bookmark.fill" : "bookmark")
+                        Image(systemName: watchlistVM.watchlistIds.contains(movie.id)
+                              ? "bookmark.fill"
+                              : "bookmark")
                             .foregroundColor(.white)
                     }
                 }
