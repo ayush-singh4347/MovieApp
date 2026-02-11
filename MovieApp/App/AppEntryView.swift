@@ -10,9 +10,10 @@ import SwiftUI
 
 struct AppEntryView: View {
 
-    @StateObject private var authVM = AuthViewModel()
+   // @StateObject private var authVM = AuthViewModel()
     @State private var path = NavigationPath()
     @State private var showSplash = true
+    @EnvironmentObject var authVM: AuthViewModel
 
     var body: some View {
 
