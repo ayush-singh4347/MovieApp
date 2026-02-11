@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var watchlistVM = WatchlistViewModel()
+    @EnvironmentObject var watchlistVM: WatchlistViewModel
     @StateObject private var viewModel = HomeViewModel()
 
     private let columns = Array(
@@ -126,6 +126,7 @@ struct HomeView: View {
             .onAppear {
                 Task {
                     await viewModel.fetchMovies()
+                    await watchlistVM.fetchWatchlist()
                 }
             }
         

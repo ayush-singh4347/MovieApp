@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @StateObject private var watchlistVM = WatchlistViewModel()
 
     var body: some View {
 
@@ -29,6 +30,7 @@ struct MainTabView: View {
                 Label("Watchlist", systemImage: "bookmark.fill")
             }
         }
+        .environmentObject(watchlistVM)
     }
 }
 
