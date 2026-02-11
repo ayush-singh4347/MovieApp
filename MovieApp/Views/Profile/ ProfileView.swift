@@ -15,6 +15,7 @@ struct ProfileView: View {
 
     @State private var isEditing = false
     @State private var isLoading = true
+    @Binding var selectedTab: Tab
 
     var body: some View {
         ScrollView {
@@ -52,12 +53,14 @@ struct ProfileView: View {
                                 .padding(.horizontal,16)
                         }
                     }
-                    .padding(.top)
-                    
-                    
-                    HStack(spacing: 16) {
-                        NavigationLink {
-                            WatchlistView()
+                }
+                .padding(.top)
+
+               
+                HStack(spacing: 16) {
+                    Button {
+                            //WatchlistView()
+                        selectedTab = .watchlist
                         } label: {
                             statCard(
                                 title: "Watchlist",

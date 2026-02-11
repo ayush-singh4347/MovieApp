@@ -9,16 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @StateObject private var authVM = AuthViewModel()
+   // @StateObject private var authVM = AuthViewModel()
 
     var body: some View {
-        if authVM.user != nil {
-            HomeView()
-                .environmentObject(authVM)
-        } else {
-            LoginView()
-                .environmentObject(authVM)
-        }
+//        if authVM.user != nil {
+//           AppEntryView()
+//               .environmentObject(authVM)
+//        } else {
+//            LoginView()
+//               .environmentObject(authVM)
+//        }
+        AppEntryView()
     }
 }
 
