@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var watchlistVM = WatchlistViewModel()
     @StateObject private var viewModel = HomeViewModel()
+    @Binding var selectedTab: Tab
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 12),
@@ -18,26 +19,46 @@ struct HomeView: View {
                     .fontWeight(.bold)
                     .padding(.horizontal)
                 
-                NavigationLink {
-                    SearchView()
+//                NavigationLink {
+//                    SearchView()
+//                } label: {
+//                    HStack(spacing: 12) {
+//                        Image(systemName: "magnifyingglass")
+//                            .foregroundColor(.secondary)
+//                        
+//                        Text("Search movies, actors, genres...")
+//                            .foregroundColor(.secondary)
+//                        
+//                        Spacer()
+//                    }
+//                    .padding()
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 12)
+//                            .fill(Color.primary.opacity(0.08))
+//                    )
+//                }
+//                .buttonStyle(.plain)
+//                .padding(.horizontal)
+                
+                Button {
+                    selectedTab = .search
+                    print("tapped")
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.secondary)
-                        
+
                         Text("Search movies, actors, genres...")
                             .foregroundColor(.secondary)
-                        
+
                         Spacer()
                     }
                     .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.primary.opacity(0.08))
-                    )
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
                 }
-                .buttonStyle(.plain)
                 .padding(.horizontal)
+
                 
                 
                 LazyVGrid(columns: columns, spacing: 14) {
@@ -116,7 +137,7 @@ struct HomeView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink {
-                    ProfileView()
+                    ProfileView(selectedTab: $selectedTab)
                 } label: {
                     Image(systemName: "person.crop.circle")
                         .font(.title2)
@@ -155,7 +176,10 @@ struct HomeView: View {
     }
 }
 
+//#Preview {
+//    HomeView(selectedTab=.home)
+//}
+//
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant(.home))
 }
-
