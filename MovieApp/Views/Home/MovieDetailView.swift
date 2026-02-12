@@ -1,11 +1,11 @@
 
 import SwiftUI
+
 struct MovieDetailView: View {
 
     let movie: Movie
     @StateObject private var vm = MovieDetailViewModel()
-    @EnvironmentObject var watchlistVM : WatchlistViewModel
-    
+    @EnvironmentObject var watchlistVM: WatchlistViewModel
 
     private let headerHeight: CGFloat = 260
     private let posterHeight: CGFloat = 180
@@ -15,12 +15,13 @@ struct MovieDetailView: View {
 
             VStack(alignment: .leading, spacing: 24) {
 
-                ZStack(alignment: .topTrailing) {
+                // MARK: - HEADER (Background Poster + Play + Bookmark)
+                ZStack {
 
+                    // Background Poster
                     AsyncImage(url: movie.posterURL) { image in
                         image
                             .resizable()
-                            //.scaledToFit()
                             .scaledToFill()
                     } placeholder: {
                         Color.black
@@ -30,27 +31,47 @@ struct MovieDetailView: View {
                     .overlay(
                         Rectangle()
                             .fill(Color.black.opacity(0.55))
-                    ).safeAreaPadding(.top)
+                    )
+                    .safeAreaPadding(.top)
 
-
-                    Button {
-                        Task {
-                            await watchlistVM.toggleWatchlist(movie: movie)
+                    // PLAY BUTTON (CENTERED)
+                    if vm.trailerKey != nil {
+                        Button {
+                            vm.openTrailerExternally()
+                        } label: {
+                            Image(systemName: "play.circle.fill")
+                                .font(.system(size: 64))
+                                .foregroundColor(.white)
+                                .shadow(radius: 10)
                         }
-                    } label: {
-                        Image(systemName:
-                            watchlistVM.watchlistIds.contains(movie.id)
-                            ? "bookmark.fill"
-                            : "bookmark"
-                        )
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(Color.black.opacity(0.6))
-                            .clipShape(Circle())
                     }
-                    .padding()
+
+                    // BOOKMARK BUTTON (TOP-RIGHT)
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Button {
+                                Task {
+                                    await watchlistVM.toggleWatchlist(movie: movie)
+                                }
+                            } label: {
+                                Image(systemName:
+                                    watchlistVM.watchlistIds.contains(movie.id)
+                                    ? "bookmark.fill"
+                                    : "bookmark"
+                                )
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                            }
+                            .padding()
+                        }
+                        Spacer()
+                    }
                 }
+                .frame(height: headerHeight)
 
                 // MARK: - OVERLAPPING POSTER + TITLE ROW
                 HStack(alignment: .bottom, spacing: 16) {
@@ -66,12 +87,11 @@ struct MovieDetailView: View {
                     .frame(width: 120, height: posterHeight)
                     .cornerRadius(14)
                     .shadow(radius: 10)
-                    .offset(y: -(posterHeight / 2)) // PERFECT HALF OVERLAP
+                    .offset(y: -(posterHeight / 2))
 
                     // Movie Info (aligned to poster bottom)
                     VStack(alignment: .leading, spacing: 8) {
-
-                        Spacer() //  pushes text to bottom
+                        Spacer()
 
                         Text(movie.title)
                             .font(.title2)
@@ -87,9 +107,11 @@ struct MovieDetailView: View {
                                 .foregroundColor(.gray)
                         }
                     }
+
+                    Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, -(posterHeight / 2)) // aligns block correctly
+                .padding(.top, -(posterHeight / 2))
 
                 // MARK: - OVERVIEW
                 if let overview = vm.movie?.overview {
@@ -149,7 +171,7 @@ struct MovieDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await vm.load(movieId: movie.id)
-            //await vm.checkWatchlist(movieId: movie.id)
+            await vm.loadTrailer(movieId: movie.id)
         }
     }
 }
