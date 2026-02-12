@@ -36,11 +36,19 @@ final class AuthViewModel: ObservableObject {
             authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
                 guard let self = self else { return }
 
-                self.user = user
+                if let user = user {
+                            Task {
+                                try await user.reload()
 
-                if user == nil {
-                    self.authState = .unauthenticated
-                }
+                                if user.isEmailVerified {
+                                    self.authState = .authenticated
+                                } else {
+                                    self.authState = .verificationPending(user)
+                                }
+                            }
+                        } else {
+                            self.authState = .unauthenticated
+                        }
             }
         }
     
