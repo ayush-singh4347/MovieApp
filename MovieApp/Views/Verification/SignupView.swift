@@ -64,9 +64,7 @@ struct SignupView: View {
                             email: email,
                             password: password
                         )
-                        if authVM.user != nil{
-                            dismiss()
-                        }
+                        
                     }
                 } label: {
                     Text("Sign Up")

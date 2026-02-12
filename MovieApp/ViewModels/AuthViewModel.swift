@@ -13,8 +13,9 @@ import FirebaseFirestore
 
 enum AuthState {
     case loading
-    case authenticated
     case unauthenticated
+    case verificationPending(User)
+    case authenticated
 }
 
 
@@ -37,9 +38,7 @@ final class AuthViewModel: ObservableObject {
 
                 self.user = user
 
-                if user != nil {
-                    self.authState = .authenticated
-                } else {
+                if user == nil {
                     self.authState = .unauthenticated
                 }
             }
@@ -53,8 +52,37 @@ final class AuthViewModel: ObservableObject {
             let result = try await Auth.auth()
                 .signIn(withEmail: email, password: password)
 
-            self.user = result.user
-            await storeToken(for: result.user)
+            let user = result.user
+            try await user.reload()
+            
+            if !user.isEmailVerified {
+                authState = .verificationPending(user)
+                isLoading = false
+                return
+            }
+            
+            let check = Firestore.firestore()
+                .collection("users")
+                .document(user.uid)
+            let snapshot = try await check.getDocument()
+            if !snapshot.exists{
+                try await check.setData([
+                    "uid": user.uid,
+                    "email": email,
+                    "displayName": email.components(separatedBy: "@").first ?? "",
+                    "photoURL": "",
+                    "bio": "",
+                    "joinedAt": Timestamp(date: Date()),
+                    "watchlist": [],
+                    "preferences": [
+                        "theme": "system",
+                        "notifications": true
+                    ]
+                ])
+            }
+            self.user = user
+            authState = .authenticated
+            await storeToken(for: user)
         } catch {
             self.errorMessage = error.localizedDescription
         }
@@ -71,32 +99,39 @@ final class AuthViewModel: ObservableObject {
             let result = try await Auth.auth()
                 .createUser(withEmail: email, password: password)
 
-            self.user = result.user
-            self.authState = .authenticated
+            let newUser = result.user
+            
+            try await newUser.sendEmailVerification()
+            
+            try Auth.auth().signOut()
+            
+            authState = .verificationPending(newUser)
+            
+            errorMessage = "Verification email sent. Please verify to login."
 
-            let db = Firestore.firestore()
-
-            try await db.collection("users")
-                .document(result.user.uid)
-                .setData([
-                    "uid": result.user.uid,
-                    "email": email,
-                    "displayName": email.components(separatedBy: "@").first ?? "",
-                    "photoURL": "",
-                    "bio": "",
-                    "joinedAt": Timestamp(date: Date()),
-                    "watchlist": [],
-                    "preferences": [
-                        "theme": "system",
-                        "notifications": true
-                    ]
-                ])
-
-            await storeToken(for: result.user)
-
-        } catch {
-            self.errorMessage = error.localizedDescription
-        }
+        } catch let error as NSError {
+            if error.code == AuthErrorCode.emailAlreadyInUse.rawValue {
+                
+                do {
+                    let result = try await Auth.auth()
+                        .signIn(withEmail: email, password: password)
+                    
+                    let existingUser = result.user
+                    try await existingUser.reload()
+                    
+                    if existingUser.isEmailVerified {
+                        authState = .authenticated
+                    } else {
+                        authState = .verificationPending(existingUser)
+                    }
+                } catch {
+                    errorMessage = "Account already exists. Try logging in."
+                    authState = .unauthenticated
+                }
+            } else {
+                    errorMessage = error.localizedDescription
+                    }
+                }
 
         isLoading = false
     }
@@ -121,6 +156,16 @@ final class AuthViewModel: ObservableObject {
             KeychainManager.save(token: token, account: "firebase_id_token")
         } catch {
             print("Token fetch failed:", error.localizedDescription)
+        }
+    }
+    
+    func resendVerificationEmail(user: User) async {
+       
+        do {
+            try await user.sendEmailVerification()
+            errorMessage = "Verification email resent. Please verify to login."
+        } catch {
+            self.errorMessage = error.localizedDescription
         }
     }
 

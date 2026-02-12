@@ -25,6 +25,8 @@ struct AppEntryView: View {
                     SplashView()
                 case .unauthenticated:
                     LoginView()
+                case .verificationPending(let user):
+                    VerificationPendingView(user: user)
                 case .authenticated:
                     MainTabView()
                 }
