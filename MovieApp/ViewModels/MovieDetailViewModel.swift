@@ -43,7 +43,7 @@ final class MovieDetailViewModel: ObservableObject {
                     urlString: Endpoints.movieVideos(id: movieId)
                 )
 
-            // Prefer official YouTube trailer
+            // official YouTube trailer
             trailerKey = response.results.first {
                 $0.site == "YouTube" &&
                 $0.type == "Trailer" &&
@@ -63,7 +63,7 @@ final class MovieDetailViewModel: ObservableObject {
 
     func toggleWatchlist(movie: Movie) async {
         if isInWatchlist {
-            // optional: remove later
+            
         } else {
             await watchlistVM.addToWatchlist(movie: movie)
             isInWatchlist = true
