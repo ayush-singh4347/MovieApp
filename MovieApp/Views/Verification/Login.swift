@@ -45,9 +45,15 @@ struct LoginView: View {
                             .padding()
                             .background(Color.primary.opacity(0.05))
                             .cornerRadius(10)
+                        NavigationLink("Forgot Password?") {
+                            ForgotPasswordView()
+                        }
+                        .font(.caption)
+                        .padding(.top, 4)
+
                     }
                     
-                    if let error = authVM.errorMessage {
+                    if let error = authVM.infoMessage {
                         Text(error)
                             .foregroundColor(.red)
                             .font(.caption)
@@ -59,6 +65,7 @@ struct LoginView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
+                
                     HStack{
                         Text("Don’t have an account? ")
                         
@@ -68,6 +75,7 @@ struct LoginView: View {
                     }
                     
                     Spacer()
+                    
                 }
                 .padding(.horizontal, 24)
             }

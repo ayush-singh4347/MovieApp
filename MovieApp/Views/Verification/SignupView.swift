@@ -52,7 +52,7 @@ struct SignupView: View {
                         .cornerRadius(10)
                 }
 
-                if let error = authVM.errorMessage {
+                if let error = authVM.infoMessage {
                     Text(error)
                         .foregroundColor(.red)
                         .font(.caption)
@@ -64,9 +64,7 @@ struct SignupView: View {
                             email: email,
                             password: password
                         )
-                        if authVM.user != nil{
-                            dismiss()
-                        }
+                        
                     }
                 } label: {
                     Text("Sign Up")
