@@ -34,7 +34,7 @@ struct MovieDetailView: View {
                     )
                     .safeAreaPadding(.top)
 
-                    // PLAY BUTTON (CENTERED)
+                    // PLAY BUTTON (CENTER)
                     if vm.trailerKey != nil {
                         Button {
                             vm.openTrailerExternally()
@@ -73,7 +73,7 @@ struct MovieDetailView: View {
                 }
                 .frame(height: headerHeight)
 
-                // MARK: - OVERLAPPING POSTER + TITLE ROW
+                // MARK: - OVERLAPPING POSTER + TiTLE ROW
                 HStack(alignment: .bottom, spacing: 16) {
 
                     // Small Poster (half overlap)
@@ -89,7 +89,7 @@ struct MovieDetailView: View {
                     .shadow(radius: 10)
                     .offset(y: -(posterHeight / 2))
 
-                    // Movie Info (aligned to poster bottom)
+                    // Movie Info (aligned to Poster bottom )
                     VStack(alignment: .leading, spacing: 8) {
                         Spacer()
 
