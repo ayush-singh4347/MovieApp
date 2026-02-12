@@ -25,7 +25,7 @@ final class AuthViewModel: ObservableObject {
 
     @Published var user: User?
     @Published var isLoading = false
-    @Published var errorMessage: String?
+    @Published var infoMessage: String?
     @Published var authState: AuthState = .loading
 
     private var authListener: AuthStateDidChangeListenerHandle?
@@ -46,7 +46,7 @@ final class AuthViewModel: ObservableObject {
     
     func login(email: String, password: String) async {
         isLoading = true
-        errorMessage = nil
+        infoMessage = nil
 
         do {
             let result = try await Auth.auth()
@@ -84,7 +84,7 @@ final class AuthViewModel: ObservableObject {
             authState = .authenticated
             await storeToken(for: user)
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.infoMessage = error.localizedDescription
         }
 
         isLoading = false
@@ -93,7 +93,7 @@ final class AuthViewModel: ObservableObject {
     
     func signup(email: String, password: String) async {
         isLoading = true
-        errorMessage = nil
+        infoMessage = nil
 
         do {
             let result = try await Auth.auth()
@@ -107,7 +107,7 @@ final class AuthViewModel: ObservableObject {
             
             authState = .verificationPending(newUser)
             
-            errorMessage = "Verification email sent. Please verify to login."
+            infoMessage = "Verification email sent. Please verify to login."
 
         } catch let error as NSError {
             if error.code == AuthErrorCode.emailAlreadyInUse.rawValue {
@@ -125,11 +125,11 @@ final class AuthViewModel: ObservableObject {
                         authState = .verificationPending(existingUser)
                     }
                 } catch {
-                    errorMessage = "Account already exists. Try logging in."
+                    infoMessage = "Account already exists. Try logging in."
                     authState = .unauthenticated
                 }
             } else {
-                    errorMessage = error.localizedDescription
+                    infoMessage = error.localizedDescription
                     }
                 }
 
@@ -145,7 +145,7 @@ final class AuthViewModel: ObservableObject {
             user = nil
             authState = .unauthenticated
         } catch {
-            errorMessage = error.localizedDescription
+            infoMessage = error.localizedDescription
         }
     }
 
@@ -163,10 +163,25 @@ final class AuthViewModel: ObservableObject {
        
         do {
             try await user.sendEmailVerification()
-            errorMessage = "Verification email resent. Please verify to login."
+            infoMessage = "Verification email resent. Please verify to login."
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.infoMessage = error.localizedDescription
         }
     }
+    
+    func resetPassword(email: String) async {
+        isLoading = true
+        infoMessage = nil
+
+        do {
+            try await Auth.auth().sendPasswordReset(withEmail: email)
+            infoMessage = "Password reset email sent."
+        } catch {
+            infoMessage = error.localizedDescription
+        }
+
+        isLoading = false
+    }
+
 
 }
