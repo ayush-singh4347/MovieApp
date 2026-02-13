@@ -43,8 +43,7 @@ final class AuthViewModel: ObservableObject {
                     if user.isEmailVerified {
                         self.authState = .authenticated
                     } else {
-                        try Auth.auth().signOut()
-                        self.authState = .unauthenticated
+                        self.authState = .verificationPending(user)
                     }
                 } else {
                     self.authState = .unauthenticated
@@ -52,6 +51,7 @@ final class AuthViewModel: ObservableObject {
             }
         }
     }
+
 
     
     func login(email: String, password: String) async {
@@ -112,8 +112,6 @@ final class AuthViewModel: ObservableObject {
             let newUser = result.user
             
             try await newUser.sendEmailVerification()
-            
-            try Auth.auth().signOut()
             
             authState = .verificationPending(newUser)
             
