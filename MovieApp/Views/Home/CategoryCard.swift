@@ -27,7 +27,8 @@ struct CategoryCard: View {
                     .foregroundColor(.white)
             }
             .frame(height: 70)
-            .frame(maxWidth: .infinity)
+            .frame( minWidth: 70,maxWidth: .infinity)
+            
             .background(
                 LinearGradient(
                     colors: isSelected
