@@ -33,24 +33,26 @@ final class AuthViewModel: ObservableObject {
         listenToAuthState()
     }
     private func listenToAuthState() {
-            authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
-                guard let self = self else { return }
+        authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            guard let self = self else { return }
 
+            Task {
                 if let user = user {
-                            Task {
-                                try await user.reload()
+                    try await user.reload()
 
-                                if user.isEmailVerified {
-                                    self.authState = .authenticated
-                                } else {
-                                    self.authState = .verificationPending(user)
-                                }
-                            }
-                        } else {
-                            self.authState = .unauthenticated
-                        }
+                    if user.isEmailVerified {
+                        self.authState = .authenticated
+                    } else {
+                        try Auth.auth().signOut()
+                        self.authState = .unauthenticated
+                    }
+                } else {
+                    self.authState = .unauthenticated
+                }
             }
         }
+    }
+
     
     func login(email: String, password: String) async {
         isLoading = true
