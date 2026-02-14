@@ -12,4 +12,5 @@ enum MovieCategory: String, CaseIterable {
     case popular = "Popular"
     case topRated = "Top Rated"
     case upcoming = "Upcoming"
+    case all = "All"
 }

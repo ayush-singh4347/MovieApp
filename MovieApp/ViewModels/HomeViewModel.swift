@@ -14,6 +14,9 @@ final class HomeViewModel: ObservableObject {
     @Published var selectedCategory: MovieCategory = .nowPlaying
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var showLanguageFilter = false
+    @Published var selectedLanguages: Set<String> = []
+
    
     
 
@@ -34,6 +37,10 @@ final class HomeViewModel: ObservableObject {
             urlString = Endpoints.topRated(apiKey: apiKey)
         case .upcoming:
             urlString = Endpoints.upcoming(apiKey: apiKey)
+        case .all:
+            await fetchMoviesForLanguages()
+            isLoading = false
+            return
         }
 
         do {
@@ -52,6 +59,28 @@ final class HomeViewModel: ObservableObject {
             selectedCategory = category
             await fetchMovies()
         }
+    func fetchMoviesForLanguages() async {
+
+        var allMovies: [Movie] = []
+
+        for lang in selectedLanguages {
+            let url = Endpoints.discoverMovies(
+                language: lang,
+                apiKey: apiKey
+            )
+
+            do {
+                let response: SearchResponse = try await APIClient.shared.request(urlString: url)
+                allMovies.append(contentsOf: response.results)
+            } catch {
+                print(error)
+            }
+        }
+
+        // remove duplicates
+        self.movies = Array(Set(allMovies))
+    }
+
 
 
 }
