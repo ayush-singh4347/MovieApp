@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct MovieDetailView: View {
@@ -17,7 +16,7 @@ struct MovieDetailView: View {
 
                 // MARK: - HEADER (Background Poster + Play + Bookmark)
                 ZStack {
-                   
+
                     // Background Poster
                     AsyncImage(url: movie.posterURL) { image in
                         image
@@ -34,7 +33,7 @@ struct MovieDetailView: View {
                     )
                     .safeAreaPadding(.top)
 
-                    // PLAY BUTTON (CENTER)
+                    //  PLAY BUTTON (CENTER)
                     if vm.trailerKey != nil {
                         Button {
                             vm.openTrailerExternally()
@@ -46,7 +45,7 @@ struct MovieDetailView: View {
                         }
                     }
 
-                    // BOOKMARK BUTTON (TOP-RIGHT)
+                    //  BOOKMARK BUTTON (TOP-RIGHT)
                     VStack {
                         HStack {
                             Spacer()
@@ -73,10 +72,9 @@ struct MovieDetailView: View {
                 }
                 .frame(height: headerHeight)
 
-                // MARK: - OVERLAPPING POSTER + TiTLE ROW
+                // MARK: - OVERLAPPING POSTER + TITLE
                 HStack(alignment: .bottom, spacing: 16) {
 
-                    // Small Poster (half overlap)
                     AsyncImage(url: movie.posterURL) { image in
                         image
                             .resizable()
@@ -89,7 +87,6 @@ struct MovieDetailView: View {
                     .shadow(radius: 10)
                     .offset(y: -(posterHeight / 2))
 
-                    // Movie Info (aligned to Poster bottom )
                     VStack(alignment: .leading, spacing: 8) {
                         Spacer()
 
@@ -128,6 +125,29 @@ struct MovieDetailView: View {
                     .cornerRadius(14)
                     .padding(.horizontal)
                 }
+
+                // MARK: - RATE MOVIE (FIXED LOCATION)
+                Button {
+                    vm.tempRating = vm.userRating ?? 3
+                    vm.showRatingSheet = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.orange)
+
+                        if let rating = vm.userRating {
+                            Text("Your Rating: \(String(format: "%.1f", rating))")
+                        } else {
+                            Text("Rate this movie")
+                        }
+                    }
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(14)
+                }
+                .padding(.horizontal)
 
                 // MARK: - CAST
                 if !vm.cast.isEmpty {
@@ -169,9 +189,25 @@ struct MovieDetailView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+
+        // MARK: - RATING SHEET
+        .sheet(isPresented: $vm.showRatingSheet) {
+            RatingSheetView(
+                rating: $vm.tempRating,
+                onSubmit: {
+                    Task {
+                        await vm.submitRating(movieId: movie.id)
+                        vm.showRatingSheet = false
+                    }
+                }
+            )
+        }
+
+        // MARK: - LOAD DATA (SINGLE TASK )
         .task {
             await vm.load(movieId: movie.id)
             await vm.loadTrailer(movieId: movie.id)
+            await vm.loadUserRating(movieId: movie.id)
         }
     }
 }

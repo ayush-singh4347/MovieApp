@@ -33,7 +33,7 @@ struct CategoryCard: View {
                 LinearGradient(
                     colors: isSelected
                         ? [.blue, .purple]
-                        : [.gray.opacity(0.4), .gray.opacity(0.2)],
+                        : [.gray.opacity(0.8), .gray.opacity(0.8)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
