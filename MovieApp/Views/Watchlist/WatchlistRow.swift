@@ -30,7 +30,6 @@ struct WatchlistRow: View {
 
                 Text(movie.title)
                     .font(.system(size:18, weight: .semibold))
-                    .foregroundColor(.white)
                     .lineLimit(2)
 
                 HStack(spacing: 6) {
@@ -53,7 +52,7 @@ struct WatchlistRow: View {
                                 Text(String(date.prefix(4)))
                                     .font(.system(size: 14))
                             }
-                            .foregroundColor(.gray)
+                    .opacity(0.8)
                 }
                 
                 if let duration = movie.runtime {
@@ -64,7 +63,7 @@ struct WatchlistRow: View {
                             Text("\(duration)")
                                 .font(.system(size: 14))
                         }
-                        .foregroundColor(.gray.opacity(0.9))
+                        .opacity(0.9)
                 }
             }
 
@@ -79,6 +78,6 @@ struct WatchlistRow: View {
             )
         )
         .cornerRadius(18)
-        .shadow(color: .black.opacity(0.2), radius: 10)
+        
     }
 }
