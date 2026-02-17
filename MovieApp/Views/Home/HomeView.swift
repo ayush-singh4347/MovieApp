@@ -64,8 +64,8 @@ struct HomeView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         CategoryCard(
-                            title: "All",
-                            icon: "line.3.horizontal.decrease.circle",
+                            title: "Languages",
+                            icon: "globe",
                             isSelected: viewModel.selectedCategory == .all
                         ) {
                             viewModel.showLanguageFilter = true

@@ -11,6 +11,8 @@ import SwiftUI
 struct LanguageFilterView: View {
 
     @ObservedObject var viewModel: HomeViewModel
+    @Environment(\.dismiss) private var dismiss
+
 
 //    let languages = [
 //        ("English", "en"),
@@ -120,35 +122,85 @@ struct LanguageFilterView: View {
         ("Welsh", "cy"),
         ("Yiddish", "yi")
     ]
+   // @Binding var selectedLanguages: Set<String>
 
+       @State private var searchText = ""
+
+       var filteredLanguages: [(name: String, code: String)] {
+           if searchText.isEmpty {
+               return languages
+           } else {
+               return languages.filter {
+                   $0.name.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
 
     var body: some View {
-        NavigationStack {
-            List(languages, id: \.1) { language in
-                MultipleSelectionRow(
-                    title: language.0,
-                    isSelected: viewModel.selectedLanguages.contains(language.1)
-                ) {
-                    if viewModel.selectedLanguages.contains(language.1) {
-                        viewModel.selectedLanguages.remove(language.1)
-                    } else {
-                        viewModel.selectedLanguages.insert(language.1)
+        VStack(spacing:0){
+            NavigationStack {
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    
+                    TextField("Search", text: $searchText)
+                        .font(.subheadline)
+                        .textFieldStyle(.plain)
+                    
+                    if !searchText.isEmpty {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                            .onTapGesture {
+                                searchText = ""
+                            }
                     }
                 }
-            }
-            .navigationTitle("Select Languages")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Apply") {
-                        viewModel.selectedCategory = .all
-                        viewModel.showLanguageFilter = false
-                        Task {
-                            await viewModel.fetchMoviesForLanguages()
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .padding(.horizontal)
+                .padding(.top, 6)
+                
+                List(filteredLanguages, id: \.1) { language in
+                    MultipleSelectionRow(
+                        title: language.0,
+                        isSelected: viewModel.selectedLanguages.contains(language.1)
+                    ) {
+                        if viewModel.selectedLanguages.contains(language.1) {
+                            viewModel.selectedLanguages.remove(language.1)
+                        } else {
+                            viewModel.selectedLanguages.insert(language.1)
+                        }
+                    }
+                } .listStyle(.plain)                 
+                    .scrollContentBackground(.hidden)
+                .navigationTitle("Select Languages")
+                //            .searchable(
+                //                       text: $searchText,
+                //                       placement: .navigationBarDrawer(displayMode: .always)
+                //                   )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "chevron.left")
+                            }
+                        }
+                    ToolbarItem() {
+                        Button("Apply") {
+                            viewModel.selectedCategory = .all
+                            viewModel.showLanguageFilter = false
+                            Task {
+                                await viewModel.fetchMoviesForLanguages()
+                            }
                         }
                     }
                 }
             }
-        }
+        }//.searchable(text: $searchText, prompt: "Search Language")
     }
 }
 struct MultipleSelectionRow: View {
@@ -169,5 +221,4 @@ struct MultipleSelectionRow: View {
         }
     }
 }
-
 
