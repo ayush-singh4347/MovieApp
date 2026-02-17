@@ -102,6 +102,10 @@ final class AuthViewModel: ObservableObject {
 
     
     func signup(email: String, password: String) async {
+        if let validationError = validatePassword(password) {
+                infoMessage = validationError
+                return
+            }
         isLoading = true
         infoMessage = nil
 
@@ -189,6 +193,36 @@ final class AuthViewModel: ObservableObject {
         }
 
         isLoading = false
+    }
+
+    
+    private func validatePassword(_ password: String) -> String? {
+
+        if password.count < 8 {
+            return "Password must be at least 8 characters."
+        }
+
+        let uppercase = NSPredicate(format: "SELF MATCHES %@", ".*[A-Z]+.*")
+        if !uppercase.evaluate(with: password) {
+            return "Password must contain at least one uppercase letter."
+        }
+
+        let lowercase = NSPredicate(format: "SELF MATCHES %@", ".*[a-z]+.*")
+        if !lowercase.evaluate(with: password) {
+            return "Password must contain at least one lowercase letter."
+        }
+
+        let number = NSPredicate(format: "SELF MATCHES %@", ".*[0-9]+.*")
+        if !number.evaluate(with: password) {
+            return "Password must contain at least one number."
+        }
+
+        let special = NSPredicate(format: "SELF MATCHES %@", ".*[!@#$%^&*(),.?\":{}|<>]+.*")
+        if !special.evaluate(with: password) {
+            return "Password must contain at least one special character."
+        }
+
+        return nil
     }
 
 
