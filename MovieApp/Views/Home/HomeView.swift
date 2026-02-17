@@ -61,49 +61,60 @@ struct HomeView: View {
 
                 
                 
-                LazyVGrid(columns: columns, spacing: 14) {
-                    
-                    CategoryCard(
-                        title: "Now Playing",
-                        icon: "play.circle.fill",
-                        isSelected: viewModel.selectedCategory == .nowPlaying
-                    ) {
-                        Task{
-                            await viewModel.selectCategory(.nowPlaying)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        CategoryCard(
+                            title: "All",
+                            icon: "line.3.horizontal.decrease.circle",
+                            isSelected: viewModel.selectedCategory == .all
+                        ) {
+                            viewModel.showLanguageFilter = true
                         }
-                    }
-                    
-                    CategoryCard(
-                        title: "Popular",
-                        icon: "flame.fill",
-                        isSelected: viewModel.selectedCategory == .popular
-                    ) {
-                        Task{
-                            await viewModel.selectCategory(.popular)
+                        
+                        
+                        CategoryCard(
+                            title: "Now Playing",
+                            icon: "play.circle.fill",
+                            isSelected: viewModel.selectedCategory == .nowPlaying
+                        ) {
+                            Task{
+                                await viewModel.selectCategory(.nowPlaying)
+                            }
                         }
-                    }
-                    
-                    CategoryCard(
-                        title: "Top Rated",
-                        icon: "star.fill",
-                        isSelected: viewModel.selectedCategory == .topRated
-                    ) {
-                        Task{
-                            await viewModel.selectCategory(.topRated)
+                        
+                        CategoryCard(
+                            title: "Popular",
+                            icon: "flame.fill",
+                            isSelected: viewModel.selectedCategory == .popular
+                        ) {
+                            Task{
+                                await viewModel.selectCategory(.popular)
+                            }
                         }
-                    }
-                    
-                    CategoryCard(
-                        title: "Upcoming",
-                        icon: "clock.fill",
-                        isSelected: viewModel.selectedCategory == .upcoming
-                    ) {
-                        Task{
-                            await viewModel.selectCategory(.upcoming)
+                        
+                        CategoryCard(
+                            title: "Top Rated",
+                            icon: "star.fill",
+                            isSelected: viewModel.selectedCategory == .topRated
+                        ) {
+                            Task{
+                                await viewModel.selectCategory(.topRated)
+                            }
                         }
+                        
+                        CategoryCard(
+                            title: "Upcoming",
+                            icon: "clock.fill",
+                            isSelected: viewModel.selectedCategory == .upcoming
+                        ) {
+                            Task{
+                                await viewModel.selectCategory(.upcoming)
+                            }
+                        }
+                        
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
                 
                 
                 Divider()
@@ -150,6 +161,10 @@ struct HomeView: View {
                     await watchlistVM.fetchWatchlist()
                 }
             }
+            .sheet(isPresented: $viewModel.showLanguageFilter) {
+                LanguageFilterView(viewModel: viewModel)
+            }
+
         
     }
 
