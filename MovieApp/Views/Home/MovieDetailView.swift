@@ -17,7 +17,7 @@ struct MovieDetailView: View {
 
                 // MARK: - HEADER (Background Poster + Play + Bookmark)
                 ZStack {
-
+                   
                     // Background Poster
                     AsyncImage(url: movie.posterURL) { image in
                         image
