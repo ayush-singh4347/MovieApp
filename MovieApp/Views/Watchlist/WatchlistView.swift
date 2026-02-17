@@ -55,18 +55,7 @@ struct WatchlistView: View {
                     }
                     
         }
-        .background(
-            LinearGradient(
-                colors: [Color.black, Color.gray.opacity(0.2)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-        )
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(.black, for: .navigationBar)
-        .toolbarColorScheme(.dark, for: .navigationBar)
-
         .navigationTitle("Watchlist")
 
         // Load on open
