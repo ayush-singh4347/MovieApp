@@ -11,6 +11,12 @@ final class MovieDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var trailerKey: String?
 
+    @Published var userRating: Double? = nil
+    @Published var showRatingSheet = false
+    @Published var tempRating: Double = 3.0
+
+    private let ratingRepository = RatingRepository()
+
 
     private let watchlistVM = WatchlistViewModel()
 
@@ -69,5 +75,24 @@ final class MovieDetailViewModel: ObservableObject {
             isInWatchlist = true
         }
     }
+    func loadUserRating(movieId: Int) async {
+        do {
+            userRating = try await ratingRepository.fetchRating(movieId: movieId)
+        } catch {
+            print("Failed to load rating:", error.localizedDescription)
+        }
+    }
+    func submitRating(movieId: Int) async {
+        do {
+            try await ratingRepository.saveRating(
+                movieId: movieId,
+                rating: tempRating
+            )
+            userRating = tempRating
+        } catch {
+            print("Failed to save rating:", error.localizedDescription)
+        }
+    }
+
 }
 
