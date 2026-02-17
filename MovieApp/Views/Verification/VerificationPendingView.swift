@@ -29,12 +29,10 @@ struct VerificationPendingView: View {
             }
 
             Button("Back to Login") {
-                Task{
-                    try await user.reload()
-                    if user.isEmailVerified {
+                Task {
+                        try? Auth.auth().signOut()
                         authVM.authState = .unauthenticated
                     }
-                }
             }
         }
         .padding()
