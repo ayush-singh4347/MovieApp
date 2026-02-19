@@ -47,7 +47,8 @@ final class ProfileViewModel: ObservableObject {
                 .document(uid)
                 .updateData([
                     "displayName": displayName,
-                    "bio": bio
+                    "bio": bio,
+                    "photoURL":aelectedAvatar
                 ])
 
             profile?.displayName = displayName

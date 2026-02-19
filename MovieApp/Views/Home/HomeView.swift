@@ -150,7 +150,12 @@ struct HomeView: View {
                 Button{
                     selectedTab = .profile
                 } label: {
-                    Image(systemName: "person.crop.circle")
+                    Image(profile.photoURL)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
+
                         .font(.title2)
                 }
             }

@@ -77,13 +77,14 @@ struct ProfileView: View {
                         VStack(spacing: 12) {
 
                             Circle()
-                                .fill(.black.opacity(0.4))
-                                .frame(width: 90, height: 90)
+                                .frame(width: 100, height: 100)
                                 .overlay(
-                                    Image(systemName: "person.fill")
-                                        .font(.system(size: 36))
-                                        .foregroundColor(.white)
+                                    Image(profile.photoURL)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .clipShape(Circle())
                                 )
+
 
                             Text(profile.displayName)
                                 .font(.title2.bold())

@@ -12,6 +12,8 @@ struct EditProfileView: View {
 
     @State private var displayName: String
     @State private var bio: String
+    @State private var selectedAvatar: String
+
 
     let onSave: (String, String) -> Void
 
