@@ -12,10 +12,51 @@ struct ProfileView: View {
     
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var vm = ProfileViewModel()
-    
+   
     @State private var isEditing = false
     @State private var isLoading = true
     @Binding var selectedTab: Tab
+    var themeCard: some View {
+        VStack(spacing: 12) {
+
+            HStack {
+                Image(systemName: authVM.selectedTheme == .dark ? "moon.fill" : "sun.max.fill")
+                    .foregroundColor(.white)
+
+                Text(authVM.selectedTheme == .dark ? "Dark Mode" : "Light Mode")
+                    .foregroundColor(.white)
+                    .font(.headline)
+
+                Spacer()
+            }
+
+            Toggle("", isOn: Binding(
+                get: { authVM.selectedTheme == .dark },
+                set: { value in
+                    let newTheme: AppTheme = value ? .dark : .light
+                    Task {
+                        await authVM.updateTheme(newTheme)
+                    }
+                }
+            ))
+            .labelsHidden()
+            .tint(.white)
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(
+            LinearGradient(
+                colors: authVM.selectedTheme == .dark
+                ? [.indigo, .purple]
+                : [.blue, .cyan],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .purple.opacity(0.4), radius: 8)
+    }
+
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -24,7 +65,6 @@ struct ProfileView: View {
 
                 VStack(spacing: 28) {
 
-                    // MARK: - HEADER
                     ZStack {
                         LinearGradient(
                             colors: [.blue, .purple],
@@ -58,7 +98,6 @@ struct ProfileView: View {
                     }
                     .padding(.top)
 
-                    // MARK: - STATS
                     HStack(spacing: 16) {
 
                         statCard(
@@ -70,15 +109,8 @@ struct ProfileView: View {
                             selectedTab = .watchlist
                         }
 
-                        statCard(
-                            title: "Movies",
-                            value: "∞",
-                            icon: "film.fill",
-                            color: .purple
-                        ) {}
+                        themeCard
                     }
-
-                    // MARK: - ACCOUNT CARD
                     VStack(alignment: .leading, spacing: 12) {
 
                         Text("Account")
@@ -97,7 +129,6 @@ struct ProfileView: View {
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
 
-                    // MARK: - ACTION BUTTONS
                     VStack(spacing: 14) {
 
                         Button {
