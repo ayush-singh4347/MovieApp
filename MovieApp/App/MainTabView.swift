@@ -3,6 +3,7 @@ enum Tab {
     case home
     case search
     case watchlist
+    case profile
 }
 
 
@@ -39,6 +40,13 @@ struct MainTabView: View {
                 Label("Watchlist", systemImage: "bookmark.fill")
             }
             .tag(Tab.watchlist)
+            NavigationStack {
+                           ProfileView(selectedTab: $selectedTab)
+                       }
+                       .tabItem {
+                           Label("Profile", systemImage: "person.crop.circle.fill")
+                       }
+                       .tag(Tab.profile)
         }
         .environmentObject(watchlistVM)
     }

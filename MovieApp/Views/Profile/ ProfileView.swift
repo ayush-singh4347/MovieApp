@@ -18,108 +18,116 @@ struct ProfileView: View {
     @Binding var selectedTab: Tab
     
     var body: some View {
-        ScrollView {
-            if let profile = vm.profile{
-                VStack(spacing: 24) {
-                    
+        ScrollView(showsIndicators: false) {
+
+            if let profile = vm.profile {
+
+                VStack(spacing: 28) {
+
+                    // MARK: - HEADER
                     ZStack {
                         LinearGradient(
-                            colors: [.purple, .black],
+                            colors: [.blue, .purple],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
-                        .frame(height: 260)
+                        .frame(height: 240)
                         .clipShape(RoundedRectangle(cornerRadius: 30))
-                        
+
                         VStack(spacing: 12) {
+
                             Circle()
-                                .fill(.ultraThinMaterial)
-                                .frame(width: 100, height: 100)
+                                .fill(.black.opacity(0.4))
+                                .frame(width: 90, height: 90)
                                 .overlay(
                                     Image(systemName: "person.fill")
-                                        .font(.system(size: 40))
+                                        .font(.system(size: 36))
+                                        .foregroundColor(.white)
                                 )
-                            
+
                             Text(profile.displayName)
-                                .font(.title2)
+                                .font(.title2.bold())
                                 .foregroundColor(.white)
-                                .bold()
-                            
-                            Text(profile.bio)
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .foregroundColor(.white.opacity(0.9))
+
+                            Text(profile.bio.isEmpty ? "Movie Lover 🎬" : profile.bio)
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.85))
                                 .multilineTextAlignment(.center)
-                                .padding(.horizontal,16)
+                                .padding(.horizontal)
                         }
                     }
-                }
-                .padding(.top)
-                
-                
-                HStack(spacing: 16) {
-                    Button {
-                        //WatchlistView()
-                        selectedTab = .watchlist
-                    } label: {
+                    .padding(.top)
+
+                    // MARK: - STATS
+                    HStack(spacing: 16) {
+
                         statCard(
                             title: "Watchlist",
                             value: "\(profile.watchlist.count)",
-                            icon: "bookmark.fill"
-                        )
+                            icon: "bookmark.fill",
+                            color: .blue
+                        ) {
+                            selectedTab = .watchlist
+                        }
+
+                        statCard(
+                            title: "Movies",
+                            value: "∞",
+                            icon: "film.fill",
+                            color: .purple
+                        ) {}
                     }
-                    .buttonStyle(.plain)
-                    
-                    statCard(
-                        title: "Movies",
-                        value: "∞",
-                        icon: "film.fill"
-                    )
-                }
-                
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Account")
-                        .font(.headline)
-                    
-                    HStack {
-                        Image(systemName: "envelope.fill")
-                        Text(profile.email)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+
+                    // MARK: - ACCOUNT CARD
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        Text("Account")
+                            .font(.headline)
+
+                        HStack(spacing: 10) {
+                            Image(systemName: "envelope.fill")
+                                .foregroundColor(.blue)
+
+                            Text(profile.email)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+
+                    // MARK: - ACTION BUTTONS
+                    VStack(spacing: 14) {
+
+                        Button {
+                            isEditing = true
+                        } label: {
+                            Text("Edit Profile")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+
+                        Button(role: .destructive) {
+                            authVM.logout()
+                        } label: {
+                            Text("Logout")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+
+                    Spacer(minLength: 40)
                 }
                 .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                
-                
-                VStack(spacing: 12) {
-                    
-                    Button {
-                        isEditing = true
-                    } label: {
-                        Label("Edit Profile", systemImage: "pencil")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    
-                    Button(role: .destructive) {
-                        authVM.logout()
-                    } label: {
-                        Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-                
-                Spacer(minLength: 40)
-                
-                    .padding()
-            } else if vm.isLoading{
+
+            } else if vm.isLoading {
+
                 ProgressView()
-                    .padding(.top,80)
-            }else{
-                Text("Profilenot found")
+                    .padding(.top, 80)
+
+            } else {
+
+                Text("Profile not found")
                     .padding(.top, 80)
             }
         }
@@ -140,27 +148,47 @@ struct ProfileView: View {
             await vm.fetchProfile()
         }
     }
-}
+
 
     
 
-    func statCard(title: String, value: String, icon: String) -> some View {
-        VStack(spacing: 6) {
+func statCard(
+    title: String,
+    value: String,
+    icon: String,
+    color: Color,
+    action: @escaping () -> Void
+) -> some View {
+
+    Button(action: action) {
+        VStack(spacing: 8) {
+
             Image(systemName: icon)
-                .font(.title2)
+                .font(.title3)
+                .foregroundColor(.white)
 
             Text(value)
-                .font(.title3)
-                .bold()
+                .font(.title2.bold())
+                .foregroundColor(.white)
 
             Text(title)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(.white.opacity(0.8))
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(.ultraThinMaterial)
+        .background(
+            LinearGradient(
+                colors: [color.opacity(0.9), color],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: color.opacity(0.4), radius: 8)
+    }
+    .buttonStyle(.plain)
+}
     }
 
 
