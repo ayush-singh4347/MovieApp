@@ -15,7 +15,7 @@ struct ProfileView: View {
    
     @State private var isEditing = false
     @State private var isLoading = true
-    @Binding var selectedTab: Tab
+    @Binding var selectedTab: Tab 
     var themeCard: some View {
         VStack(spacing: 12) {
 
@@ -41,6 +41,7 @@ struct ProfileView: View {
             ))
             .labelsHidden()
             .tint(.white)
+
         }
         .padding()
         .frame(maxWidth: .infinity)
@@ -165,17 +166,24 @@ struct ProfileView: View {
         }
         .navigationTitle("Profile")
         .sheet(isPresented: $isEditing) {
-            if let profile = vm.profile{
+            if let profile = vm.profile {
                 EditProfileView(
                     displayName: profile.displayName,
-                    bio: profile.bio
-                ) { newName, newBio in
-                    Task{
-                        await vm.updateProfile(displayName: newName, bio: newBio)
+                    bio: profile.bio,
+                    photoURL: profile.photoURL
+                ) { newName, newBio, newAvatar in
+                    Task {
+                        await vm.updateProfile(
+                            displayName: newName,
+                            bio: newBio,
+                            photoURL: newAvatar
+                        )
+                        authVM.userAvatar = newAvatar
                     }
                 }
             }
         }
+
         .task {
             await vm.fetchProfile()
         }

@@ -27,7 +27,9 @@ final class AuthViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var infoMessage: String?
     @Published var authState: AuthState = .loading
-    @Published var selectedTheme: AppTheme = .system
+    @Published var selectedTheme: AppTheme = .dark
+    @Published var userAvatar: String = "avatar_boy1"
+
 
     private var authListener: AuthStateDidChangeListenerHandle?
     init() {
@@ -38,20 +40,22 @@ final class AuthViewModel: ObservableObject {
             guard let self = self else { return }
 
             Task {
-                if let user = user {
-                    try await user.reload()
+                        if let user = user {
+                            try await user.reload()
 
-                    if user.isEmailVerified {
-                        self.authState = .authenticated
-                    } else {
-                        self.authState = .verificationPending(user)
+                            if user.isEmailVerified {
+                                self.authState = .authenticated
+                                self.user = user
+                                await self.loadUserPreferences(uid: user.uid)
+                            } else {
+                                self.authState = .verificationPending(user)
+                            }
+                        } else {
+                            self.authState = .unauthenticated
+                        }
                     }
-                } else {
-                    self.authState = .unauthenticated
                 }
             }
-        }
-    }
 
 
     
@@ -86,19 +90,26 @@ final class AuthViewModel: ObservableObject {
                     "joinedAt": Timestamp(date: Date()),
                     "watchlist": [],
                     "preferences": [
-                        "theme": "system",
+                        "theme": "dark",
                         "notifications": true
                     ]
                 ])
             }
             self.user = user
             authState = .authenticated
-            if let themeString = snapshot.data()?["preferences"] as? [String: Any],
-               let themeRaw = themeString["theme"] as? String,
-               let theme = AppTheme(rawValue: themeRaw) {
-                selectedTheme = theme
+            let data = snapshot.data()
+
+            if let photoURL = data?["photoURL"] as? String,!photoURL.isEmpty {
+                self.userAvatar = photoURL
+            } else {
+                self.userAvatar = "avatar_boy1"
             }
 
+            if let prefs = data?["preferences"] as? [String: Any],
+               let themeRaw = prefs["theme"] as? String,
+               let theme = AppTheme(rawValue: themeRaw) {
+                self.selectedTheme = theme
+            }
 
             await storeToken(for: user)
         } catch {
@@ -248,5 +259,35 @@ final class AuthViewModel: ObservableObject {
             print("Theme update failed:", error.localizedDescription)
         }
     }
+    
+    
+    private func loadUserPreferences(uid: String) async {
+        do {
+            let snapshot = try await Firestore.firestore()
+                .collection("users")
+                .document(uid)
+                .getDocument()
+
+            if let data = snapshot.data() {
+
+                // Avatar
+                if let avatar = data["photoURL"] as? String,
+                   !avatar.isEmpty {
+                    self.userAvatar = avatar
+                }
+
+                // Theme
+                if let prefs = data["preferences"] as? [String: Any],
+                   let themeRaw = prefs["theme"] as? String,
+                   let theme = AppTheme(rawValue: themeRaw) {
+                    self.selectedTheme = theme
+                }
+            }
+
+        } catch {
+            print("Failed to load preferences:", error.localizedDescription)
+        }
+    }
+
 
 }
