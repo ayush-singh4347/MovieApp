@@ -4,6 +4,8 @@ struct HomeView: View {
     @EnvironmentObject var watchlistVM: WatchlistViewModel
     @StateObject private var viewModel = HomeViewModel()
     @Binding var selectedTab: Tab
+    @EnvironmentObject var authVM: AuthViewModel
+
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 12),
@@ -145,15 +147,18 @@ struct HomeView: View {
         .navigationBarTitleDisplayMode(.inline)
 
        
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button{
-                    selectedTab = .profile
-                } label: {
-                    Image(systemName: "person.crop.circle")
-                        .font(.title2)
-                }
+        .toolbar {ToolbarItem(placement: .navigationBarTrailing) {
+            Button {
+                selectedTab = .profile
+            } label: {
+                Image(authVM.userAvatar)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 36, height: 36)
+                    .clipShape(Circle())
             }
+        }
+
             }
             .onAppear {
                 Task {

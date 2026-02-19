@@ -28,9 +28,9 @@ final class ProfileViewModel: ObservableObject {
                 .collection("users")
                 .document(uid)
                 .getDocument()
-
-            profile = try snapshot.data(as: UserProfile.self)
-
+            if let decodedProfile = try? snapshot.data(as: UserProfile.self) {
+                            self.profile = decodedProfile
+                        }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -38,23 +38,32 @@ final class ProfileViewModel: ObservableObject {
         isLoading = false
     }
 
-    func updateProfile(displayName: String, bio: String) async {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+    func updateProfile(
+           displayName: String,
+           bio: String,
+           photoURL: String
+       ) async {
 
-        do {
-            try await Firestore.firestore()
-                .collection("users")
-                .document(uid)
-                .updateData([
-                    "displayName": displayName,
-                    "bio": bio
-                ])
+           guard let uid = Auth.auth().currentUser?.uid else { return }
 
-            profile?.displayName = displayName
-            profile?.bio = bio
+           do {
+               try await Firestore.firestore()
+                   .collection("users")
+                   .document(uid)
+                   .updateData([
+                       "displayName": displayName,
+                       "bio": bio,
+                       "photoURL": photoURL
+                   ])
 
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-}
+               
+               profile?.displayName = displayName
+               profile?.bio = bio
+               profile?.photoURL = photoURL
+               @EnvironmentObject var authVM: AuthViewModel
+
+           } catch {
+               errorMessage = error.localizedDescription
+           }
+       }
+   }
