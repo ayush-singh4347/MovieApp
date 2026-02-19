@@ -10,6 +10,7 @@ import SwiftUI
 struct AppEntryView: View {
 
     @StateObject private var authVM = AuthViewModel()
+   
     //@State private var showSplash = true
     //@EnvironmentObject var authVM: AuthViewModel
 
@@ -29,7 +30,8 @@ struct AppEntryView: View {
             
         }
         .environmentObject(authVM)
-        
+        .preferredColorScheme(authVM.selectedTheme.colorScheme)
+
         }
     }
 

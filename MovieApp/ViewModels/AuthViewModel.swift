@@ -27,6 +27,7 @@ final class AuthViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var infoMessage: String?
     @Published var authState: AuthState = .loading
+    @Published var selectedTheme: AppTheme = .system
 
     private var authListener: AuthStateDidChangeListenerHandle?
     init() {
@@ -92,6 +93,13 @@ final class AuthViewModel: ObservableObject {
             }
             self.user = user
             authState = .authenticated
+            if let themeString = snapshot.data()?["preferences"] as? [String: Any],
+               let themeRaw = themeString["theme"] as? String,
+               let theme = AppTheme(rawValue: themeRaw) {
+                selectedTheme = theme
+            }
+
+
             await storeToken(for: user)
         } catch {
             self.infoMessage = error.localizedDescription
@@ -224,6 +232,21 @@ final class AuthViewModel: ObservableObject {
 
         return nil
     }
+    func updateTheme(_ theme: AppTheme) async {
+        selectedTheme = theme   
 
+        guard let uid = user?.uid else { return }
+
+        do {
+            try await Firestore.firestore()
+                .collection("users")
+                .document(uid)
+                .updateData([
+                    "preferences.theme": theme.rawValue
+                ])
+        } catch {
+            print("Theme update failed:", error.localizedDescription)
+        }
+    }
 
 }

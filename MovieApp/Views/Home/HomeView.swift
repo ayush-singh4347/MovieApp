@@ -147,8 +147,8 @@ struct HomeView: View {
        
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink {
-                    ProfileView(selectedTab: $selectedTab)
+                Button{
+                    selectedTab = .profile
                 } label: {
                     Image(systemName: "person.crop.circle")
                         .font(.title2)
