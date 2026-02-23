@@ -63,11 +63,7 @@ final class MovieDetailViewModel: ObservableObject {
             print("Trailer not available")
         }
     }
-    func openTrailerExternally() {
-        guard let key = trailerKey,
-              let url = URL(string: "https://www.youtube.com/watch?v=\(key)") else { return }
-        UIApplication.shared.open(url)
-    }
+  
 
 
     func toggleWatchlist(movie: Movie) async {

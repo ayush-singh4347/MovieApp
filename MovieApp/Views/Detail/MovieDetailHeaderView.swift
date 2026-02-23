@@ -60,10 +60,24 @@ struct MovieDetailHeaderView: View {
                     Spacer()
                     
                     if trailerKey != nil {
-                        Button(action: onPlay) {
+                        Menu {
+                            Button {
+                                onPlay() // We will configure this to set choice to .youtube
+                            } label: {
+                                Label("YouTube", systemImage: "play.rectangle.fill")
+                            }
+                            
+                            Button {
+                                // New action for Native Player
+                                NotificationCenter.default.post(name: NSNotification.Name("ShowNativePlayer"), object: nil)
+                            } label: {
+                                Label("AVPlayer", systemImage: "bolt.horizontal.fill")
+                            }
+                        } label: {
                             Image(systemName: "play.circle.fill")
                                 .font(.system(size: 70))
                                 .foregroundColor(.white)
+                                .shadow(radius: 10)
                         }
                     }
                     
