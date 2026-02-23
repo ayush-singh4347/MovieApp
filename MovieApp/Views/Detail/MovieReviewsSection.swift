@@ -12,27 +12,31 @@ struct MovieReviewsSection: View {
     @ObservedObject var vm: MovieDetailViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            
-            ForEach(vm.reviews) { review in
-                VStack(alignment: .leading, spacing: 8) {
-                    
-                    Text(review.author)
-                        .font(.headline)
-                    
-                    if let rating = review.rating {
-                        Text("⭐️ \(rating,specifier: "%.1f")")
+        if vm.reviews.isEmpty{
+            EmptyStateView(systemImage: "text.bubble", title: "No Reviews Yet", message: "Be the first to share your thoughts about this movie.").padding(.top,40)
+        }else{
+            VStack(alignment: .leading, spacing: 16) {
+                
+                ForEach(vm.reviews) { review in
+                    VStack(alignment: .leading, spacing: 8) {
+                        
+                        Text(review.author)
+                            .font(.headline)
+                        
+                        if let rating = review.rating {
+                            Text("⭐️ \(rating,specifier: "%.1f")")
+                        }
+                        
+                        Text(review.content)
+                            .font(.subheadline)
+                            .lineLimit(4)
                     }
-                    
-                    Text(review.content)
-                        .font(.subheadline)
-                        .lineLimit(4)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
                 }
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(12)
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
     }
 }

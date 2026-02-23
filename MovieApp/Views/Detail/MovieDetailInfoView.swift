@@ -33,7 +33,7 @@ struct MovieDetailInfoView: View {
                 Text(movie.title)
                     .font(.title2.bold())
                 
-                // RATING + RUNTIME + YEAR
+                
                 HStack(spacing: 8) {
                     
                     Label(
@@ -53,7 +53,7 @@ struct MovieDetailInfoView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 
-                // GENRES
+                
                 if let genres = details?.genres {
                     WrapGenreView(genres: genres)
                 }
@@ -65,6 +65,8 @@ struct MovieDetailInfoView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 12)
+        .background(Color(.systemBackground))
+        .shadow(color:.black.opacity(0.05),radius:5)
     }
 }
 

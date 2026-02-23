@@ -19,9 +19,14 @@ struct MovieSimilarSection: View {
     var body: some View {
         
         if vm.similarMovies.isEmpty {
-            Text("No similar movies found.")
-                .foregroundColor(.secondary)
-                .padding()
+            
+            EmptyStateView(
+                systemImage: "sparkles.tv",
+                title: "No Similar Movies",
+                message: "We couldn't find related movies for this title."
+            )
+            .padding(.top, 40)
+            
         } else {
             LazyVGrid(columns: columns, spacing: 16) {
                 
