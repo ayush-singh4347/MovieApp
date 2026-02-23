@@ -15,6 +15,13 @@ final class MovieDetailViewModel: ObservableObject {
     @Published var showRatingSheet = false
     @Published var tempRating: Double = 3.0
 
+    @Published var showTrailerSafari = false
+
+    var trailerURL: URL? {
+        guard let key = trailerKey else { return nil }
+        return URL(string: "https://www.youtube.com/watch?v=\(key)")
+    }
+
     private let ratingRepository = RatingRepository()
 
 
@@ -59,11 +66,6 @@ final class MovieDetailViewModel: ObservableObject {
         } catch {
             print("Trailer not available")
         }
-    }
-    func openTrailerExternally() {
-        guard let key = trailerKey,
-              let url = URL(string: "https://www.youtube.com/watch?v=\(key)") else { return }
-        UIApplication.shared.open(url)
     }
 
 

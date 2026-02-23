@@ -1,10 +1,23 @@
+
+
 import SwiftUI
+import AVKit // Added for Ntive AVPlayer
 
 struct MovieDetailView: View {
-
+    
     let movie: Movie
     @StateObject private var vm = MovieDetailViewModel()
     @EnvironmentObject var watchlistVM: WatchlistViewModel
+
+   
+    @State private var showPlayerOptions = false
+    @State private var activePlayer: PlayerChoice? = nil
+
+    // Enum to manage which player to show
+    enum PlayerChoice: Identifiable {
+        case youtube, native
+        var id: Int { hashValue }
+    }
 
     private let headerHeight: CGFloat = 260
     private let posterHeight: CGFloat = 180
@@ -16,7 +29,6 @@ struct MovieDetailView: View {
 
                 // MARK: - HEADER (Background Poster + Play + Bookmark)
                 ZStack {
-
                     // Background Poster
                     AsyncImage(url: movie.posterURL) { image in
                         image
@@ -33,19 +45,20 @@ struct MovieDetailView: View {
                     )
                     .safeAreaPadding(.top)
 
-                    //  PLAY BUTTON (CENTER)
-                    if vm.trailerKey != nil {
+                    // PLAY BUTTON (CENTER)
+//                    if vm.trailerKey != nil {
                         Button {
-                            vm.openTrailerExternally()
+                            
+                            showPlayerOptions = true
                         } label: {
                             Image(systemName: "play.circle.fill")
                                 .font(.system(size: 64))
                                 .foregroundColor(.white)
                                 .shadow(radius: 10)
                         }
-                    }
+//                    }
 
-                    //  BOOKMARK BUTTON (TOP-RIGHT)
+                    // BOOKMARK BUTTON (TOP-RIGHT)
                     VStack {
                         HStack {
                             Spacer()
@@ -113,10 +126,8 @@ struct MovieDetailView: View {
                 // MARK: - OVERVIEW
                 if let overview = vm.movie?.overview {
                     VStack(alignment: .leading, spacing: 10) {
-
                         Text("Overview")
                             .font(.headline)
-
                         Text(overview)
                             .foregroundColor(.gray)
                     }
@@ -126,7 +137,7 @@ struct MovieDetailView: View {
                     .padding(.horizontal)
                 }
 
-                // MARK: - RATE MOVIE (FIXED LOCATION)
+                // MARK: - RATE MOVIE
                 Button {
                     vm.tempRating = vm.userRating ?? 3
                     vm.showRatingSheet = true
@@ -134,7 +145,6 @@ struct MovieDetailView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "star.fill")
                             .foregroundColor(.orange)
-
                         if let rating = vm.userRating {
                             Text("Your Rating: \(String(format: "%.1f", rating))")
                         } else {
@@ -152,7 +162,6 @@ struct MovieDetailView: View {
                 // MARK: - CAST
                 if !vm.cast.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
-
                         Text("Cast")
                             .font(.headline)
                             .padding(.horizontal)
@@ -161,7 +170,6 @@ struct MovieDetailView: View {
                             HStack(spacing: 16) {
                                 ForEach(vm.cast) { actor in
                                     VStack(spacing: 6) {
-
                                         AsyncImage(url: actor.profileURL) { image in
                                             image
                                                 .resizable()
@@ -184,11 +192,38 @@ struct MovieDetailView: View {
                         }
                     }
                 }
-
                 Spacer(minLength: 30)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        
+        // MARK: - Selection between youtube & AVplayer
+        .confirmationDialog("Watch Trailer", isPresented: $showPlayerOptions, titleVisibility: .visible) {
+            Button("YouTube") {
+                activePlayer = .youtube
+            }
+            Button("Native AVPlayer") {
+                activePlayer = .native
+            }
+            Button("Cancel", role: .cancel) { }
+        }
+        
+        // MARK: - SHARED PLAYER SHEET
+        .sheet(item: $activePlayer) { choice in
+            if let key = vm.trailerKey {
+                switch choice {
+                case .youtube:
+                    YouTubePlayerView(videoId: key)
+                        .ignoresSafeArea()
+                case .native:
+                  
+                    NativePlayerView()
+                    .ignoresSafeArea()
+                    .presentationDragIndicator(.visible)
+                    .presentationDetents([.large])
+                }
+            }
+        }
 
         // MARK: - RATING SHEET
         .sheet(isPresented: $vm.showRatingSheet) {
@@ -203,7 +238,7 @@ struct MovieDetailView: View {
             )
         }
 
-        // MARK: - LOAD DATA (SINGLE TASK )
+        // MARK: - LOAD DATA
         .task {
             await vm.load(movieId: movie.id)
             await vm.loadTrailer(movieId: movie.id)
