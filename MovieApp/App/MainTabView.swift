@@ -49,6 +49,7 @@ struct MainTabView: View {
                        .tag(Tab.profile)
         }
         .environmentObject(watchlistVM)
+        .tint(.purple)
     }
 }
 

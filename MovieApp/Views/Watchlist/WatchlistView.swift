@@ -8,35 +8,27 @@ struct WatchlistView: View {
 
         Group {
 
-            // Loading
+            
             if viewModel.isLoading {
 
                 ProgressView("Loading...")
                     .scaleEffect(1.2)
 
-            // Error
+            
             } else if let error = viewModel.errorMessage {
 
                 Text(error)
                     .foregroundColor(.red)
                     .padding()
 
-            // Empty
+            
             } else if viewModel.movies.isEmpty {
-
-                VStack(spacing: 20) {
-
-                    Image(systemName: "tray")
-                        .font(.system(size: 60))
-
-                    Text("No Movies Yet")
-                        .font(.headline)
-
-                    Text("Add movies to your watchlist")
-                        .foregroundColor(.gray)
-                }
-
-            // List
+                EmptyStateView(
+                systemImage: "film.stack",
+                title: "Your Watchlist is Empty",
+                message: "Save movies to your watchlist and find them here anytime."
+                )
+                .padding(.top, 60)
             } else {
                 ScrollView{
                 LazyVStack {
