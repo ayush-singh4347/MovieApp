@@ -27,7 +27,7 @@ struct CategoryCard: View {
                     .foregroundColor(.white)
             }
             .frame(height: 70)
-            .frame( minWidth: 70,maxWidth: .infinity)
+            .frame( minWidth: 90,maxWidth: 140)
             
             .background(
                 LinearGradient(
@@ -49,4 +49,5 @@ struct CategoryCard: View {
         .buttonStyle(.plain)
     }
 }
+
 
