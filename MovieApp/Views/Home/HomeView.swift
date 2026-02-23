@@ -122,26 +122,127 @@ struct HomeView: View {
                 Divider()
                 
                 
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible()),
-                        GridItem(.flexible())
-                    ],
-                    spacing: 16
-                ) {
-                    ForEach(viewModel.movies) { movie in
-                        NavigationLink {
-                            MovieDetailView(movie: movie)
-                        } label: {
-                            MovieGridCell(movie: movie)
-                                .environmentObject(watchlistVM)
-                        }
-                        .buttonStyle(.plain) 
-                    }
+                
+                    if viewModel.selectedCategory == .all {
+
+                           if viewModel.selectedLanguages.isEmpty {
+                               VStack(spacing: 12) {
+                                   Spacer()
+                                   Image(systemName: "text.badge.xmark")
+                                       .font(.system(size: 40))
+                                       .foregroundColor(.gray.opacity(0.6))
+                                   
+                                   Text("No Language Selected")
+                                       .font(.headline)
+                                       .foregroundColor(.gray)
+                                   
+                                   Text("Choose a language to discover movies")
+                                       .font(.subheadline)
+                                       .foregroundColor(.gray)
+                                       .multilineTextAlignment(.center)
+                               }
+                               .frame(maxWidth: .infinity)
+
+                               
+                           } else if viewModel.movies.isEmpty {
+                               VStack(spacing: 12) {
+                                   Spacer()
+                                   Image(systemName: "video.slash")
+
+                                       .font(.system(size: 40))
+                                       .foregroundColor(.gray.opacity(0.6))
+                                   
+                                   Text("No Movies Found")
+                                       .font(.headline)
+                                       .foregroundColor(.gray)
+                                   
+                                   Text("Try selecting a different language")
+                                       .font(.subheadline)
+                                       .foregroundColor(.gray)
+                                       .multilineTextAlignment(.center)
+                               }
+                               .frame(maxWidth: .infinity)
+
+                               
+                           } else {
+                               //movieGrid
+                               LazyVGrid(
+                                   columns: [
+                                       GridItem(.flexible()),
+                                       GridItem(.flexible())
+                                   ],
+                                   spacing: 16
+                               ) {ForEach(viewModel.movies) { movie in
+                                   NavigationLink {
+                                       MovieDetailView(movie: movie)
+                                   } label: {
+                                       MovieGridCell(movie: movie)
+                                           .environmentObject(watchlistVM)
+                                   }
+                                   .buttonStyle(.plain)
+                               }}
+                               
+
+                           }
+
+                       } else {
+                           //  For Now Playing, Popular, etc
+                          // movieGrid
+                           
+                           if viewModel.movies.isEmpty {
+                               VStack(spacing: 12) {
+                                   Spacer()
+                                   Image(systemName: "film.slash")
+                                       .font(.system(size: 40))
+                                       .foregroundColor(.gray.opacity(0.6))
+                                   
+                                   Text("No Movies Found")
+                                       .font(.headline)
+                                       .foregroundColor(.white)
+                                   
+                                   
+                               }
+                               .frame(maxWidth: .infinity, minHeight: 250)
+
+                               
+                           }
+                           else{
+                               LazyVGrid(
+                                   columns: [
+                                       GridItem(.flexible()),
+                                       GridItem(.flexible())
+                                   ],
+                                   spacing: 16
+                               ) {
+                                   ForEach(viewModel.movies) { movie in
+                                       NavigationLink {
+                                           MovieDetailView(movie: movie)
+                                       } label: {
+                                           MovieGridCell(movie: movie)
+                                               .environmentObject(watchlistVM)
+                                       }
+                                       .buttonStyle(.plain)
+                                   }
+                               }
+                               
+
+                               
+                           }
+                           
+                       }
+//                    ForEach(viewModel.movies) { movie in
+//                        NavigationLink {
+//                            MovieDetailView(movie: movie)
+//                        } label: {
+//                            MovieGridCell(movie: movie)
+//                                .environmentObject(watchlistVM)
+//                        }
+//                        .buttonStyle(.plain) 
+//                    }
 
                 }
                 .padding()
-            }
+            
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)

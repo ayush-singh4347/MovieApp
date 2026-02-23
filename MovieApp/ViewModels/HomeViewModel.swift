@@ -60,6 +60,11 @@ final class HomeViewModel: ObservableObject {
             await fetchMovies()
         }
     func fetchMoviesForLanguages() async {
+        guard !selectedLanguages.isEmpty else {
+               self.movies = []
+               return
+           }
+
 
         var allMovies: [Movie] = []
 
