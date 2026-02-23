@@ -10,8 +10,7 @@ final class WatchlistViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var watchlistIds: Set<Int> = []
-
-
+   
     private let repository = WatchlistRepository()
 
 
