@@ -19,17 +19,18 @@ struct MovieDetailView: View {
                 MovieDetailHeaderView(
                     movie: movie,
                     trailerKey: vm.trailerKey,
-                    isBookmarked: watchlistVM.watchlistIds.contains(movie.id),
                     onPlay: {
                         
                         activePlayer = .youtube
-                    },
-                    onBookmark: {
-                        Task { await watchlistVM.toggleWatchlist(movie: movie) }
                     }
                 )
                 
-                MovieDetailInfoView(movie: movie, details: vm.movie, certification: vm.certification)
+                MovieDetailInfoView(movie: movie, details: vm.movie, certification: vm.certification,isBookmarked: watchlistVM.watchlistIds.contains(movie.id),
+                                    onBookmark: {
+                                    Task {
+                                    await watchlistVM.toggleWatchlist(movie: movie)
+                                    }
+                                    })
                 MovieDetailTabsView(vm: vm, movie: movie)
             }
         }
