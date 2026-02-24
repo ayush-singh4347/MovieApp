@@ -13,7 +13,7 @@ struct MovieGridCell: View {
 
     let movie: Movie
     @EnvironmentObject var watchlistVM: WatchlistViewModel
-
+    @State private var animateBookmark = false
     @State private var isAdding = false
 
     var body: some View {
@@ -77,32 +77,43 @@ struct MovieGridCell: View {
 
            
             Button {
-                isAdding = true
-
+                animateBookmark = true
+                
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                
                 Task {
-                    await watchlistVM.addToWatchlist(movie: movie)
-                    isAdding = false
+                    await watchlistVM.toggleWatchlist(movie: movie)
                 }
+                
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    animateBookmark = true
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    animateBookmark = false
+                }
+                
             } label: {
                 ZStack {
                     Circle()
                         .fill(.black.opacity(0.7))
                         .frame(width: 32, height: 32)
-
-                    if isAdding {
-                        ProgressView()
-                            .tint(.white)
-                            .scaleEffect(0.6)
-                    } else {
-                        Image(systemName: watchlistVM.watchlistIds.contains(movie.id)
-                              ? "bookmark.fill"
-                              : "bookmark")
-                            .foregroundColor(.white)
-                    }
+                    
+                    Image(systemName:
+                            watchlistVM.watchlistIds.contains(movie.id)
+                          ? "bookmark.fill"
+                          : "bookmark")
+                    .foregroundColor(
+                        watchlistVM.watchlistIds.contains(movie.id)
+                        ? .purple
+                        : .white
+                    )
+                        .scaleEffect(animateBookmark ? 1.3 : 1.0)
+                        .rotationEffect(.degrees(animateBookmark ? -8 : 0))
                 }
             }
+            .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animateBookmark)
             .padding(8)
-            
         }
         
 
