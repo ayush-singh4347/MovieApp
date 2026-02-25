@@ -5,7 +5,7 @@ struct MovieDetailView: View {
     @StateObject private var vm = MovieDetailViewModel()
     @EnvironmentObject var watchlistVM: WatchlistViewModel
     
-    // 1. Add state for the player choice
+    
     @State private var activePlayer: PlayerChoice? = nil
 
     enum PlayerChoice: Identifiable {
@@ -30,12 +30,59 @@ struct MovieDetailView: View {
                                     Task {
                                     await watchlistVM.toggleWatchlist(movie: movie)
                                     }
-                                    })
+                }).padding(.bottom, 8)
+               
+                Button {
+                    vm.tempRating = vm.userRating ?? 3.0
+                    vm.showRatingSheet = true
+                } label: {
+                    HStack(spacing: 10) {
+                        
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.orange)
+                        
+                        if let rating = vm.userRating {
+                            Text("Your Rating: \(rating, specifier: "%.1f")")
+                                .fontWeight(.semibold)
+                        } else {
+                            Text("Rate this movie")
+                                .foregroundColor(Color(.secondaryLabel))
+                                .fontWeight(.semibold)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            colors: [.purple.opacity(0.2), .blue.opacity(0.4)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(14)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
                 MovieDetailTabsView(vm: vm, movie: movie)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(movie.title)
+        .sheet(isPresented: $vm.showRatingSheet) {
+            RatingSheetView(
+                rating: $vm.tempRating,
+                onSubmit: {
+                    Task {
+                        await vm.submitRating(movieId: movie.id)
+                        vm.showRatingSheet = false
+                    }
+                }
+            )
+        }
         
         .sheet(item: $activePlayer) { choice in
             Group {
@@ -45,13 +92,13 @@ struct MovieDetailView: View {
                         YouTubePlayerView(videoId: key)
                     }
                 case .native:
-                    NativePlayerView() // Uses your native file
+                    NativePlayerView()
                 }
             }
             .ignoresSafeArea()
             .presentationDragIndicator(.visible)
         }
-        // 4. Listen for the Native Player notification from the Header
+        
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("ShowNativePlayer"))) { _ in
             activePlayer = .native
         }
