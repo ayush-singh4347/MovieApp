@@ -43,6 +43,18 @@ struct Endpoints {
     static func discoverMovies(language: String, apiKey: String) -> String {
         "\(baseURL)/discover/movie?with_original_language=\(language)&api_key=\(apiKey)"
     }
+    
+    static func movieSimilar(id: Int) -> String {
+        return "\(baseURL)/movie/\(id)/similar?api_key=\(APIConstants.apiKey)"
+    }
+
+    static func movieReviews(id: Int) -> String {
+        return "\(baseURL)/movie/\(id)/reviews?api_key=\(APIConstants.apiKey)"
+    }
+    
+    static func movieReleaseDates(id: Int) -> String {
+        return "\(baseURL)/movie/\(id)/release_dates?api_key=\(APIConstants.apiKey)"
+    }
 
 
 }

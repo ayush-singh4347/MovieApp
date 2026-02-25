@@ -126,22 +126,9 @@ struct HomeView: View {
                     if viewModel.selectedCategory == .all {
 
                            if viewModel.selectedLanguages.isEmpty {
-                               VStack(spacing: 12) {
-                                   Spacer()
-                                   Image(systemName: "text.badge.xmark")
-                                       .font(.system(size: 40))
-                                       .foregroundColor(.gray.opacity(0.6))
-                                   
-                                   Text("No Language Selected")
-                                       .font(.headline)
-                                       .foregroundColor(.gray)
-                                   
-                                   Text("Choose a language to discover movies")
-                                       .font(.subheadline)
-                                       .foregroundColor(.gray)
-                                       .multilineTextAlignment(.center)
-                               }
-                               .frame(maxWidth: .infinity)
+                               EmptyStateView(systemImage: "text.badge.xmark", title: "No Language Selected", message: "Choose a language to discover movies")
+                               
+                               
 
                                
                            } else if viewModel.movies.isEmpty {
