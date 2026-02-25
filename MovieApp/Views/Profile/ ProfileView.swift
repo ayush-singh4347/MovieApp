@@ -113,24 +113,31 @@ struct ProfileView: View {
 
                         themeCard
                     }
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 14) {
 
                         Text("Account")
                             .font(.headline)
+                            .foregroundColor(.primary)
+                            .textCase(.uppercase)
 
                         HStack(spacing: 10) {
-                            Image(systemName: "envelope.fill")
-                                .foregroundColor(.blue)
+                            Image(systemName: "envelope")
+                                .foregroundColor(.secondary)
 
                             Text(profile.email)
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.primary)
+                                .textSelection(.enabled)
+                            Spacer()
                         }
+                        
                     }
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.gray.opacity(0.2),lineWidth: 1)
+                    )
+                    .padding(.horizontal,4)
                     VStack(spacing: 14) {
 
                         Button {
