@@ -27,6 +27,7 @@ struct SearchBarView: View {
                     text = ""
                 } label: {
                     Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
                 }
             }
         }
