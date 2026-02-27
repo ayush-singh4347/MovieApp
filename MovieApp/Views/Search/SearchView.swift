@@ -16,13 +16,59 @@ struct SearchView: View {
         NavigationStack {
             VStack(spacing: 16) {
                 VStack(spacing: 16) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                        TextField("Search", text: $viewModel.searchText)
+                            .font(.subheadline)
+                            .textFieldStyle(.plain)
+                        
+                        if !viewModel.searchText.isEmpty {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray)
+                                .onTapGesture {
+                                    viewModel.searchText = ""
+                                }
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    .padding(.top, 6)
                     
-                    TextField("Search movie", text: $viewModel.searchText)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-                        .padding(.horizontal)
                     
+                    
+                    
+//                    HStack{
+//                        TextField("Search movie", text: $viewModel.searchText)
+//                            .padding()
+//                            .background(Color(.systemGray6))
+//                            .cornerRadius(12)
+//                            .padding(.horizontal)
+//                        if !viewModel.searchText.isEmpty {
+//                            Image(systemName: "xmark.circle.fill")
+//                                .foregroundColor(.gray)
+//                                .padding()
+//                                .background(Color(.systemGray6))
+//                                .cornerRadius(12)
+//                                .padding(.horizontal)
+//                                .onTapGesture {
+//                                    viewModel.searchText = ""
+//                                }
+//                        }
+//                        
+//                    }
+                    
+//                    TextField("Search movie", text: $viewModel.searchText)
+//                        .padding()
+//                        .background(Color(.systemGray6))
+//                        .cornerRadius(12)
+//                        .padding(.horizontal)
+//                    
                     if viewModel.isLoading {
                         ProgressView()
                             .padding()
@@ -58,6 +104,7 @@ struct SearchView: View {
                         )
                         .padding(.top, 80)
                     }
+                   
                     
                     else {
                         List(viewModel.movies) { movie in
