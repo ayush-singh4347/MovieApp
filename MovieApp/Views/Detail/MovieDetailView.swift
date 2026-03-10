@@ -7,6 +7,8 @@ struct MovieDetailView: View {
     
     
     @State private var activePlayer: PlayerChoice? = nil
+    @State private var showCertificateInfo = false
+    @State private var certificateMeaning = ""
 
     enum PlayerChoice: Identifiable {
         case youtube, native
@@ -30,6 +32,10 @@ struct MovieDetailView: View {
                                     Task {
                                     await watchlistVM.toggleWatchlist(movie: movie)
                                     }
+                },
+                                    onCertificateTap:{
+                    certificateMeaning = vm.certificationMeaning
+                    showCertificateInfo = true
                 }).padding(.bottom, 8)
                
                 Button {
@@ -109,62 +115,40 @@ struct MovieDetailView: View {
             await vm.loadSimilar(movieId: movie.id)
             await vm.loadReviews(movieId: movie.id)
             await vm.loadCertification(movieId: movie.id)
+            await vm.loadCertificationList()
+            vm.resolveCertificationMeaning()
+        }
+        .overlay{
+            if showCertificateInfo {
+                ZStack{
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .onTapGesture{
+                            withAnimation{
+                                showCertificateInfo = false
+                            }
+                        }
+                    VStack(spacing: 16){
+                        Text(vm.certification ?? "NR")
+                            .font(.title.bold())
+                        Text(certificateMeaning)
+                            .font(.body)
+                            .multilineTextAlignment(.center)
+                        Button("Close"){
+                            withAnimation{
+                                showCertificateInfo = false
+                            }
+                        }.buttonStyle(.borderedProminent)
+                    }
+                    .padding(24)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(20)
+                    .padding(40)
+                    .shadow(radius: 20)
+                }
+                .transition(.opacity)
+                .animation(.easeInOut, value: showCertificateInfo)
+            }
         }
     }
 }
-//struct MovieDetailView: View {
-//    
-//    let movie: Movie
-//    
-//    @StateObject private var vm = MovieDetailViewModel()
-//    @EnvironmentObject var watchlistVM: WatchlistViewModel
-//    
-//    var body: some View {
-//        ScrollView(showsIndicators: false) {
-//            
-//            VStack(spacing: 0) {
-//                
-//                MovieDetailHeaderView(
-//                    movie: movie,
-//                    trailerKey: vm.trailerKey,
-//                    isBookmarked: watchlistVM.watchlistIds.contains(movie.id),
-//                    onPlay: { vm.openTrailerExternally() },
-//                    onBookmark: {
-//                        Task {
-//                            await watchlistVM.toggleWatchlist(movie: movie)
-//                        }
-//                    }
-//                )
-//                MovieDetailInfoView(
-//                    movie: movie,
-//                    details: vm.movie,
-//                    certification: vm.certification
-//                )
-//                
-//                MovieDetailTabsView(vm: vm, movie: movie)
-//            }
-//            
-//            .navigationBarTitleDisplayMode(.inline)
-//            .navigationTitle(movie.title)
-//            .task {
-//                await vm.load(movieId: movie.id)
-//                await vm.loadTrailer(movieId: movie.id)
-//                await vm.loadUserRating(movieId: movie.id)
-//                await vm.loadSimilar(movieId: movie.id)
-//                await vm.loadReviews(movieId: movie.id)
-//                await vm.loadCertification(movieId: movie.id)
-//            }
-//            .sheet(isPresented: $vm.showRatingSheet) {
-//                RatingSheetView(
-//                    rating: $vm.tempRating,
-//                    onSubmit: {
-//                        Task {
-//                            await vm.submitRating(movieId: movie.id)
-//                            vm.showRatingSheet = false
-//                        }
-//                    }
-//                )
-//            }
-//        }
-//    }
-//}

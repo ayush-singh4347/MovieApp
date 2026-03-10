@@ -17,9 +17,10 @@ final class MovieDetailViewModel: ObservableObject {
     @Published var similarMovies: [Movie] = []
     @Published var reviews: [Review] = []
     @Published var certification: String?
+    @Published var certificationMeaning: String = ""
 
     private let ratingRepository = RatingRepository()
-
+    private var certificationList: [String: String] = [:]
 
     private let watchlistVM = WatchlistViewModel()
 
@@ -135,6 +136,41 @@ final class MovieDetailViewModel: ObservableObject {
         } catch {
             print("Certification load failed:", error.localizedDescription)
         }
+    }
+    
+    func loadCertificationList() async {
+
+        do {
+            let response: CertificationResponse =
+                try await APIClient.shared.request(
+                    urlString: Endpoints.movieCertifications()
+                )
+
+            if let usCerts = response.certifications["US"] {
+
+                var map: [String: String] = [:]
+
+                for cert in usCerts {
+                    map[cert.certification] = cert.meaning
+                }
+
+                certificationList = map
+            }
+
+        } catch {
+            print("Certification fetch error:", error)
+        }
+    }
+    
+    
+    func resolveCertificationMeaning() {
+        
+        guard let cert = certification else {
+            certificationMeaning = "Not Rated"
+            return
+        }
+        
+        certificationMeaning = certificationList[cert] ?? "No description available"
     }
 
 }
