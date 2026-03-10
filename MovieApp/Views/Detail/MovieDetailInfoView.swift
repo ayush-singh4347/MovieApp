@@ -13,7 +13,7 @@ struct MovieDetailInfoView: View {
     let certification: String?
     let isBookmarked: Bool
     let onBookmark: () -> Void
-    
+    let onCertificateTap: () -> Void
     @State private var isExpanded = false
     @State private var animateBookmark = false
     private var shouldShowMore: Bool {
@@ -120,7 +120,9 @@ struct MovieDetailInfoView: View {
                         certificate: certification?.isEmpty == false
                         ? certification!
                         : "NR"
-                    )
+                    ).onTapGesture{
+                        onCertificateTap()
+                    }
                 }
             }
         }
