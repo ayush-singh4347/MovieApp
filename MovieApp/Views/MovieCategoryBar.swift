@@ -40,7 +40,7 @@ struct MovieCategoryBar: View {
             }
             .padding(.horizontal)
         }
-        .frame(height: 44) // 👈 IMPORTANT
+        .frame(height: 44)
     }
 }
 

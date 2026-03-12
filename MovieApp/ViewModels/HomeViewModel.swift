@@ -82,7 +82,7 @@ final class HomeViewModel: ObservableObject {
             }
         }
 
-        // remove duplicates
+        
         self.movies = Array(Set(allMovies))
     }
 
